@@ -1,35 +1,46 @@
-listOfProducts = [];
 
 class ProductManager {
     
     /* Atributos */
-    constructor (product) {
-        this.title = product.title;
-        this.price = product.price;
-        this.thumbnail = product.thumbnail;
-        this.code=product.code;
-        this.stock=product.stock;
+    constructor () {
+        this.listOfProducts = [];
     }
 
-    getFullProduct = () => {
-        const quantity = listOfProducts.length;
+    getFullProduct = (product) => {
+        const quantity = this.asignId();
         const newProd = {
-            id: quantity+1,
-            title: this.title,
-            price: this.price,
-            thumbnail: this.thumbnail,
-            code: this.code,
-            stock: this.stock}
+            id: quantity,
+            title: product.title,
+            price: product.price,
+            thumbnail: product.thumbnail,
+            code: product.code,
+            stock: product.stock}
         return newProd;
-            
     }
 
     /* Debe contar con un método “getProducts” el cual debe devolver el arreglo con todos
     los productos creados hasta ese momento */
     getProducts = () => {
-        const contenido = listOfProducts;
-        return contenido;
+        return this.listOfProducts;
     } 
+
+    asignId = () => {
+        const list = this.getProducts();
+        let maxId=0;
+        if (list.length === 0) {
+            maxId=1;
+        } else {
+            list.forEach(value => {
+                if (value.id > maxId) {
+                    maxId=value.id
+                }
+            })
+            maxId=maxId+1;
+        }
+        /* console.log("ID asignado: " + maxId); */
+        return maxId;
+        
+    }
 
     verifyCode = (code) => {
         const list = this.getProducts();
@@ -43,11 +54,11 @@ class ProductManager {
     /* Debe contar con un método “addProduct” el cual agregará un producto al arreglo de productos inicial.
     Validar que no se repita el campo “code” y que todos los campos sean obligatorios
     Al agregarlo, debe crearse con un id autoincrementable */
-    addProduct = () => {
-        const newProd = this.getFullProduct()
+    addProduct = (product) => {
+        const newProd = this.getFullProduct(product);
         const repeatCode = this.verifyCode(newProd.code);
         if (repeatCode){
-            listOfProducts.push(newProd);
+            this.listOfProducts.push(newProd);
             console.log("Producto ", newProd.id, " agregado");
         } else if (!repeatCode) {
             console.log("El producto ", newProd.id, " no puede agregar por codigo repetido.")
@@ -57,30 +68,33 @@ class ProductManager {
 
 /*     Debe contar con un método “getProductById” el cual debe buscar en el arreglo el producto que coincida 
     con el id. En caso de no coincidir ningún id, mostrar en consola un error “Not found” */
-
     getProductById = (number) => {
-        const list = this.getProducts();
         let a=[];
-        for (let i=0; i<list.length; i++){
-            if (list[i].id===number) {
-                a= list[i]
-            }
+        let product = this.getProducts().find(prod => prod.id === number);
+        if (!product) {
+            console.log("Producto con id " + number + " no encontrado.")
+            return a
+        } else {
+            console.log("Producto encontrado.");
+            console.log(product);
         }
-        if (a.length===0){
-            console.log("Not found");
-        }
-        return a
+        return product
     } 
-
-    deleteById = (number) => {
-        const list = this.getProducts();
-        const resultado = list.filter(i => i.id != number);
-        listOfProducts=resultado;
-    }
 
 }
 
-/* Creacion de objeto e invocacion de métodos */
+
+/* ---------------- TEST -----------------------------------------*/
+/* Se creará una instancia de la clase “ProductManager” */
+const productManager = new ProductManager();
+
+/* Se llamará “getProducts” recién creada la instancia, debe devolver un arreglo vacío [] */
+console.log("Llamado a getProducts ----------------------");
+console.log(productManager.getProducts());
+
+/* Se llamará al método “addProduct”. El objeto debe agregarse satisfactoriamente con un id generado
+ automáticamente SIN REPETIRSE */
+console.log("Se agrega nuevo producto -------------------");
 const newProduct = {
     title: 'Producto nuevo', 
     description: 'nuevoooo',
@@ -88,7 +102,25 @@ const newProduct = {
     thumbnail: 'Sin imagen',
     code: 'abc123',
     stock: 25}
+productManager.addProduct(newProduct);
 
+/* Se llamará el método “getProducts” nuevamente, esta vez debe aparecer el producto recién agregado */
+console.log("Segundo llamado a getProducts ----------------------");
+console.log(productManager.getProducts());
+
+/* Se llamará al método “addProduct” con los mismos campos de arriba, debe arrojar un error 
+porque el código estará repetido. */
+console.log("Se agrega 2do producto con mismo codigo -------------------");
+const newProduct1 = {
+    title: 'Producto nuevo', 
+    description: 'nuevoooo',
+    price: 200,
+    thumbnail: 'Sin imagen',
+    code: 'abc123',
+    stock: 25}
+productManager.addProduct(newProduct1);
+
+/* Se agregan 2 productos Mas */
 const newProduct2 = {
     title: 'Producto nuev 2', 
     description: 'nuevoooo 2',
@@ -102,21 +134,18 @@ const newProduct3 = {
     description: 'nuevoooo 333333333',
     price: 400,
     thumbnail: 'Sin imagen',
-    code: 'abc123',
+    code: 'abc1234',
     stock: 25}
 
-const product1 = new ProductManager (newProduct);
-const product2 = new ProductManager (newProduct2);
-const product3 = new ProductManager (newProduct3);
-product1.getProducts();
-product1.addProduct(newProduct);
-product2.addProduct(newProduct2);
-product3.addProduct(newProduct3);
-product1.getProducts();
+productManager.addProduct(newProduct2);
+productManager.addProduct(newProduct3);
 
-const a = product1.getProductById(1);
-console.log(a)
-const b = product1.getProductById(5);
-console.log(b)
+console.log("Tercer llamado a getProducts ----------------------");
+console.log(productManager.getProducts());
 
-product1.deleteById(2)
+
+/* Se evaluará que getProductById devuelva error si no encuentra el producto o el producto en caso
+ de encontrarlo */
+console.log("Se pide ver productos por ID -----------------------");
+productManager.getProductById(2);
+productManager.getProductById(10);
