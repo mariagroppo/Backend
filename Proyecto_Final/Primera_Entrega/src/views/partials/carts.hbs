@@ -1,0 +1,52 @@
+<div class="container-fluid tipografia">
+        <div class="row">
+            <div class="col border border-dark mx-1 filaDeTabla">
+                <h4 class="my-2 fw-bold text-center">Crear nuevo carrito</h4>
+                <form class="m-1" action="/api/cart" method="post">
+                    <button type="submit" class="btn btn-warning my-2">Crear</button>
+                </form>
+            </div>
+
+            <div class="col border border-dark mx-1 filaDeTabla">
+                <h4 class="my-2 fw-bold text-center">Borrar carrito</h4>
+                <form class="m-1" action="/api/cart/delete" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">ID</label>
+                        <input type="number" class="form-control" name="idCart" id="idCart">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-warning my-2">Eliminar</button>
+                </form>
+            </div>
+
+            
+            <div class="col border border-dark mx-1 filaDeTabla">
+                <h4 class="my-2 fw-bold text-center">Contenido de carritos</h4>
+                <form class="m-1" action="/api/cart/list" method="post">
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID</label>
+                        <input type="number" class="form-control" name="idCart" id="idCart">
+                    </div>
+                    <button type="submit" class="btn btn-warning my-2">Ver</button>
+                </form>
+            </div>
+           
+
+            
+            <div class="col border border-dark mx-1 filaDeTabla">
+                <h4 class="my-2 fw-bold text-center">Incluir productos</h4>
+                <form class="m-1" action="/api/cart/include" method="post">
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID Carrito</label>
+                        <input type="number" class="form-control" name="idCart" id="idCart">
+                    </div>
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID Producto</label>
+                        <input type="number" class="form-control" name="id" id="id">
+                    </div>
+                    <button type="submit" class="btn btn-warning my-2">Agregar</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>

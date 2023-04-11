@@ -1,0 +1,26 @@
+.tipografia {
+    font-family: 'Quicksand', sans-serif;
+    color: black;
+}
+
+.fondoGeneral {
+    background-color: rgb(148, 180, 159);
+}
+
+.barraNavegacion {
+    background-color: rgb(206, 229, 208);
+
+}
+
+.encabezadoDeTabla {
+    background-color: rgb(236, 179, 144);
+}
+
+.filaDeTabla{
+    background-color: rgb(252, 248, 232);
+}
+
+.imagenProducto {
+    max-width: auto;
+    max-height: 100px;
+}

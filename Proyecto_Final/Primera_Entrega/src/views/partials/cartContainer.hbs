@@ -1,0 +1,67 @@
+<div class="tipografia">
+    
+    <div class="container text-center">
+        <div class="row justify-content-start">
+            <div class="col-4 fw-bold fs-3">
+                CARRITO N°: {{carts.idCart}}
+            </div>
+            <div class="col-4 fw-bold fs-3">
+                USER: {{carts.user}}
+            </div>
+        </div>
+    </div>
+
+
+    {{#if cartsExists}}
+        <h3 class="p-3 fw-bold tipografia">PRODUCTOS</h3>
+        <div class="container-fluid">
+            {{#if pExist}}
+                <table class="table filaDeTabla">
+                    <thead class="encabezadoDeTabla">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Nombre del producto</th>
+                            <th>Descripción</th>
+                            <th>Código</th>
+                            <th>Imagen</th>
+                            <th>Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each carts.products}}  
+                            <tr class="text-center align-middle">
+                                <td>
+                                    {{this.id}}
+                                </td>
+                                <td>
+                                    {{this.title}}
+                                </td>
+                                <td>
+                                    {{this.description}}
+                                </td>
+                                <td>
+                                    {{this.code}}
+                                </td>
+                                <td>
+                                    <img class="rounded mx-auto d-block imagenProducto" src={{this.thumbnail}}>
+                                </td>
+                                <td>
+                                    {{this.price}}
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+
+            {{else}}
+                <div class="container-fluid">
+                    <h4 class="alert alert-danger">No hay productos</h4>
+                </div> 
+            {{/if}}
+        </div>
+    {{else}}
+        <div class="container-fluid">
+            <h4 class="alert alert-danger">No se puede mostrar el contenido.</h4>
+        </div>
+    {{/if}}
+</div>

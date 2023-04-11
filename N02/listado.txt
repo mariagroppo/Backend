@@ -16,5 +16,14 @@
     "thumbnail": "Sin imagen",
     "code": "abc1234",
     "stock": 350
+  },
+  {
+    "id": 4,
+    "title": "Producto nuev 2",
+    "description": "nuevoooo 2",
+    "price": 300,
+    "thumbnail": "Sin imagen",
+    "code": "abc3445",
+    "stock": 25
   }
 ]

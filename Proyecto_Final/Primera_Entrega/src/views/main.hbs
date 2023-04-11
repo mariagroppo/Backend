@@ -1,0 +1,54 @@
+<main>
+
+    <div>
+        <h4 class="p-3 fw-bold tipografia">Lista de productos</h4>
+
+        {{#if productsExists}}
+            <div class="container-fluid tipografia">
+                <table class="table filaDeTabla">
+                    <thead class="encabezadoDeTabla">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Nombre del producto</th>
+                            <th>Descripción</th>
+                            <th>Código</th>
+                            <th>Imagen</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+
+                    {{#each prods}}  
+                        <tr class="text-center align-middle">
+                            <td>
+                                {{this.id}}
+                            </td>
+                            <td>
+                                {{this.title}}
+                            </td>
+                            <td>
+                                {{this.description}}
+                            </td>
+                            <td>
+                                {{this.code}}
+                            </td>
+                            <td>
+                                <img class="rounded mx-auto d-block imagenProducto" src={{this.thumbnail}}>
+                            </td>
+                            <td>
+                                {{this.price}}
+                            </td>
+                            <td>
+                                {{this.stock}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </table>
+            </div>
+        {{else}}
+            <div class="container-fluid">
+                <h4 class="alert alert-danger">No se encontraron productos</h4>
+            </div>
+        {{/if}}
+    </div>
+</main>

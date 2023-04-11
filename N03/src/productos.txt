@@ -1,0 +1,103 @@
+[
+  {
+    "id": 1,
+    "title": "Producto nuevo",
+    "description": "nuevoooo",
+    "price": 200,
+    "thumbnail": "Sin imagen",
+    "code": "abc123",
+    "stock": 25
+  },
+  {
+    "id": 2,
+    "title": "Titulo nuevo producto 2",
+    "description": "Descripcion del nuevo producto 2.",
+    "price": 1200,
+    "thumbnail": "Sin imagen",
+    "code": "abc1234",
+    "stock": 350
+  },
+  {
+    "id": 4,
+    "title": "Titulo nuevo producto 4",
+    "description": "Descripcion del nuevo producto 4.",
+    "price": 1400,
+    "thumbnail": "Sin imagen",
+    "code": "abc124",
+    "stock": 350
+  },
+  {
+    "id": 5,
+    "title": "Titulo nuevo producto 5",
+    "description": "Descripcion del nuevo producto 5.",
+    "price": 1500,
+    "thumbnail": "Sin imagen",
+    "code": "abc125",
+    "stock": 350
+  },
+  {
+    "id": 6,
+    "title": "Titulo nuevo producto 6",
+    "description": "Descripcion del nuevo producto 6.",
+    "price": 1600,
+    "thumbnail": "Sin imagen",
+    "code": "abc126",
+    "stock": 350
+  },
+  {
+    "id": 7,
+    "title": "Titulo nuevo producto 7",
+    "description": "Descripcion del nuevo producto 7.",
+    "price": 1700,
+    "thumbnail": "Sin imagen",
+    "code": "abc127",
+    "stock": 350
+  },
+  {
+    "id": 8,
+    "title": "Titulo nuevo producto 8",
+    "description": "Descripcion del nuevo producto 8.",
+    "price": 1800,
+    "thumbnail": "Sin imagen",
+    "code": "abc128",
+    "stock": 350
+  },
+  {
+    "id": 9,
+    "title": "Titulo nuevo producto 9",
+    "description": "Descripcion del nuevo producto 9.",
+    "price": 1900,
+    "thumbnail": "Sin imagen",
+    "code": "abc129",
+    "stock": 350
+  },
+  {
+    "id": 10,
+    "title": "Titulo nuevo producto 10",
+    "description": "Descripcion del nuevo producto 10.",
+    "price": 1100,
+    "thumbnail": "Sin imagen",
+    "code": "abc1210",
+    "stock": 350
+  },
+  {
+    "id": 11,
+    "title": "Titulo nuevo producto 11",
+    "description": "Descripcion del nuevo producto 11.",
+    "price": 1100,
+    "thumbnail": "Sin imagen",
+    "code": "abc1211",
+    "stock": 350
+  },
+  {
+    "id": 12,
+    "title": "Titulo nuevo producto 12",
+    "description": "Descripcion del nuevo producto 12.",
+    "price": 11200,
+    "thumbnail": "Sin imagen",
+    "code": "abc1212",
+    "stock": 350
+  }
+  
+  
+]

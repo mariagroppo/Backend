@@ -10,11 +10,14 @@ class ProductManager {
     
     /* Devuelve el arreglo con todos los productos creados hasta ese momento */
     getProducts = async () => {
+        let contenido;
         try {
-            const contenido = await fs.promises.readFile(this.path, 'utf-8');
+            contenido = await fs.promises.readFile(this.path, 'utf-8');
             return JSON.parse(contenido);
         } catch (error) {
+            contenido=[];
             console.log('Error en getProducts: ', error);
+            return contenido;
         }
     } 
 
@@ -147,18 +150,20 @@ Muestra en consola un error “Not found” */
             let founded = false;
             for (let i = 0; i < listOfProducts.length; i++) {
                 if (listOfProducts[i].id === number) {
-                    listOfProducts[i].title = product.title,
+                    /* listOfProducts[i].title = product.title,
                     listOfProducts[i].description = product.description,
                     listOfProducts[i].price = product.price,
                     listOfProducts[i].thumbnail = product.thumbnail,
                     listOfProducts[i].code = product.code,
-                    listOfProducts[i].stock = product.stock
+                    listOfProducts[i].stock = product.stock */
+                    listOfProducts[i] = { ...listOfProducts[i], ...product };
                     founded = true;
                 }
             }
             if (founded) {
                 await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts, null,2));
                 console.log("Producto ID " + number + " actualizado.")
+                /* console.log(await this.getProductById(number)) */
             } else {
                 console.log("Producto ID " + number + " no encontrado.")
             }

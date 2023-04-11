@@ -1,0 +1,42 @@
+[
+  {
+    "id": 3,
+    "timestamp": 1659616064904,
+    "title": "Producto 3",
+    "description": "Descripcion lámina 3",
+    "code": "CODIGO-LAMINA-3",
+    "thumbnail": "https://i.picsum.photos/id/1084/200/300.jpg?hmac=JQMQbKvpN6_d6r-fiuOEYe1Dz6f2gfGIkTvsx0nLJUQ",
+    "price": "300",
+    "stock": "30"
+  },
+  {
+    "id": 4,
+    "timestamp": 1659616102679,
+    "title": "Producto 4",
+    "description": "Descripción 4",
+    "code": "CODIG4",
+    "thumbnail": "https://i.picsum.photos/id/1079/200/300.jpg?hmac=2_Q-8QGaabS7GsZLCCM2JvTkNhZFjwv5K2wVnJ8CjKI",
+    "price": "400",
+    "stock": "40"
+  },
+  {
+    "id": 5,
+    "timestamp": 1659813290967,
+    "title": "Lamina",
+    "description": "Desripcion de la lamina",
+    "code": "CODIGO-LAMINA",
+    "thumbnail": "https://i.picsum.photos/id/179/200/300.jpg?hmac=oo9H3-mvUxV9CjfSms5helxQW-n5PsZLzkg1ko78uFk",
+    "price": "300",
+    "stock": "150"
+  },
+  {
+    "id": 6,
+    "timestamp": 1659816164734,
+    "title": "Lámina Nueva",
+    "description": "Descripcion de lamina nueva",
+    "code": "CODIGO-NUEVO",
+    "thumbnail": "https://i.picsum.photos/id/383/200/300.jpg?hmac=sP8wzjNbIJGIPQg-3A86o43HsTopJPnwV73iSCwH9cw",
+    "price": "250",
+    "stock": "5"
+  }
+]

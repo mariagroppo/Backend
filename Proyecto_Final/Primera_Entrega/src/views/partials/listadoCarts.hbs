@@ -1,0 +1,44 @@
+{{#if licence}}
+    <div>
+        <h4 class="p-3 fw-bold tipografia">Lista de carritos</h4>
+
+        {{#if cartsExists}}
+            <div class="container-fluid tipografia">
+                <table class="table filaDeTabla">
+                    <thead class="encabezadoDeTabla">
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Productos</th>
+                        </tr>
+                    </thead>
+
+                    {{#each carts}}  
+                        <tr class="text-center align-middle">
+                            <td>
+                                {{this.idCart}}
+                            </td>
+                            <td>
+                                {{this.user}}
+                            </td>
+                            <td>
+                                {{#each this.products}}
+                                    {{this.title}} <br>
+                                {{/each}}
+                            </td>
+                            
+                        </tr>
+                    {{/each}}
+                </table>
+            </div>
+        {{else}}
+            <div class="container-fluid">
+                <h4 class="alert alert-danger">No se encontraron carritos</h4>
+            </div>
+        {{/if}}
+    </div>
+{{else}}
+    <div class="container-fluid">
+        <h4 class="alert alert-danger">Sección no autorizada.</h4>
+    </div>
+{{/if}}
