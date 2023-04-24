@@ -1,13 +1,13 @@
 <div class="container-fluid tipografia">
-        <div class="row">
-            <div class="col border border-dark mx-1 filaDeTabla">
-                <h4 class="my-2 fw-bold text-center">Crear nuevo carrito</h4>
-                <form class="m-1" action="/api/cart" method="post">
-                    <button type="submit" class="btn btn-warning my-2">Crear</button>
-                </form>
-            </div>
+    <div class="row">
+        <div class="col border border-dark mx-1 filaDeTabla">
+            <h4 class="my-2 fw-bold text-center">Crear nuevo carrito</h4>
+            <form class="m-1" action="/api/carts" method="post">
+                <button type="submit" class="btn btn-warning my-2">Crear</button>
+            </form>
+        </div>
 
-            <div class="col border border-dark mx-1 filaDeTabla">
+            {{!-- <div class="col border border-dark mx-1 filaDeTabla">
                 <h4 class="my-2 fw-bold text-center">Borrar carrito</h4>
                 <form class="m-1" action="/api/cart/delete" method="post">
                     <div class="mb-3">
@@ -17,10 +17,10 @@
                     
                     <button type="submit" class="btn btn-warning my-2">Eliminar</button>
                 </form>
-            </div>
+            </div> --}}
 
             
-            <div class="col border border-dark mx-1 filaDeTabla">
+            {{!-- <div class="col border border-dark mx-1 filaDeTabla">
                 <h4 class="my-2 fw-bold text-center">Contenido de carritos</h4>
                 <form class="m-1" action="/api/cart/list" method="post">
                     <div class="mb-3">
@@ -29,11 +29,11 @@
                     </div>
                     <button type="submit" class="btn btn-warning my-2">Ver</button>
                 </form>
-            </div>
+            </div> --}}
            
 
             
-            <div class="col border border-dark mx-1 filaDeTabla">
+            {{!-- <div class="col border border-dark mx-1 filaDeTabla">
                 <h4 class="my-2 fw-bold text-center">Incluir productos</h4>
                 <form class="m-1" action="/api/cart/include" method="post">
                     <div class="mb-3">
@@ -46,7 +46,7 @@
                     </div>
                     <button type="submit" class="btn btn-warning my-2">Agregar</button>
                 </form>
-            </div>
+            </div> --}}
             
-        </div>
     </div>
+</div>

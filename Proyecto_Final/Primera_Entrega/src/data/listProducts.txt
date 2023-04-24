@@ -1,33 +1,14 @@
 [
   {
-    "id": 3,
-    "timestamp": 1659616064904,
-    "title": "Producto 3",
-    "description": "Descripcion lámina 3",
-    "code": "CODIGO-LAMINA-3",
-    "thumbnail": "https://i.picsum.photos/id/1084/200/300.jpg?hmac=JQMQbKvpN6_d6r-fiuOEYe1Dz6f2gfGIkTvsx0nLJUQ",
-    "price": "300",
-    "stock": "30"
-  },
-  {
-    "id": 4,
-    "timestamp": 1659616102679,
-    "title": "Producto 4",
-    "description": "Descripción 4",
-    "code": "CODIG4",
-    "thumbnail": "https://i.picsum.photos/id/1079/200/300.jpg?hmac=2_Q-8QGaabS7GsZLCCM2JvTkNhZFjwv5K2wVnJ8CjKI",
-    "price": "400",
-    "stock": "40"
-  },
-  {
     "id": 5,
     "timestamp": 1659813290967,
     "title": "Lamina",
     "description": "Desripcion de la lamina",
     "code": "CODIGO-LAMINA",
-    "thumbnail": "https://i.picsum.photos/id/179/200/300.jpg?hmac=oo9H3-mvUxV9CjfSms5helxQW-n5PsZLzkg1ko78uFk",
+    "thumbnail": "https://fastly.picsum.photos/id/989/200/200.jpg?hmac=YmaagsSArKDGDSeyRJ9aYRxKM6KdP49ZGYtyhLHlCcY",
     "price": "300",
-    "stock": "150"
+    "stock": "150",
+    "category": "Categoria 2"
   },
   {
     "id": 6,
@@ -35,8 +16,85 @@
     "title": "Lámina Nueva",
     "description": "Descripcion de lamina nueva",
     "code": "CODIGO-NUEVO",
-    "thumbnail": "https://i.picsum.photos/id/383/200/300.jpg?hmac=sP8wzjNbIJGIPQg-3A86o43HsTopJPnwV73iSCwH9cw",
+    "thumbnail": "https://fastly.picsum.photos/id/1055/200/200.jpg?hmac=23b3LoSYozZgCujiEcPGpgSvTaW35YghR4_EK2eJU9w",
     "price": "250",
-    "stock": "5"
+    "stock": "5",
+    "category": "Categoria 3"
+  },
+  {
+    "id": 7,
+    "title": "akalskdasdjk",
+    "description": "kalsdlakjsdalkj",
+    "price": "1234",
+    "thumbnail": "https://fastly.picsum.photos/id/552/200/200.jpg?hmac=99yztwFcmd6Y23V7ViL1mArbh9wwdxbIjS9bhO8xyY8",
+    "code": "asda",
+    "stock": "1000",
+    "category": "Categoria 2"
+  },
+  {
+    "id": 8,
+    "title": "Producto Martes",
+    "description": "Descripcion Pinoho",
+    "price": "123",
+    "thumbnail": "https://fastly.picsum.photos/id/1014/200/200.jpg?hmac=fi48ne3KQ-DKXgUum86nrwA56Yb4jxz59l9Rl1aUt8k",
+    "code": "PINOCHO123",
+    "stock": "22",
+    "status": true,
+    "category": "Categoria 1"
+  },
+  {
+    "id": 9,
+    "title": "Pinocho 123",
+    "description": "Descripcion del 2do producto agregado en Pinocho",
+    "price": "111",
+    "thumbnail": "https://fastly.picsum.photos/id/832/200/200.jpg?hmac=V4CRQyK7KVP2wBYsEhpcpP8wSdwyU5c-yTeMm37uOOo",
+    "code": "PIN123",
+    "stock": "12",
+    "status": true,
+    "category": "Cat"
+  },
+  {
+    "id": 10,
+    "title": "Prueba N°3",
+    "description": "Descripcion zarasa",
+    "price": "111",
+    "thumbnail": "https://fastly.picsum.photos/id/283/200/200.jpg?hmac=Qyx_FaWqQPrmQrGhQNKh2t2FUuwTiMNTS1VCkc86YrM",
+    "code": "COD1",
+    "stock": "11",
+    "status": true,
+    "category": "cate"
+  },
+  {
+    "id": 11,
+    "title": "Preba 4",
+    "description": "descripcion 4",
+    "price": "123",
+    "thumbnail": "https://fastly.picsum.photos/id/797/200/200.jpg?hmac=-S9mzdkNyeh-FXTUE04cyqzvAV1W2D80OVQtTQHNt-k",
+    "code": "zarasa123",
+    "stock": "4",
+    "status": true,
+    "category": "Cat"
+  },
+  {
+    "id": 12,
+    "title": "Producto POSTMAN",
+    "description": "Desc POSTMAN",
+    "price": "123",
+    "thumbnail": "https://fastly.picsum.photos/id/155/200/200.jpg?hmac=D_Tf9XAIteS9U6InmFX2j3DXYkvhlEOOkGGiWuMwU9Q",
+    "code": "POST123",
+    "stock": "11",
+    "status": true,
+    "category": "categoria POSTMAN"
+  },
+  {
+    "id": 13,
+    "title": "Producto POSTMAN",
+    "description": "Descripion nueva mediante POSTMAN",
+    "price": "12344444444",
+    "thumbnail": "https://fastly.picsum.photos/id/606/200/200.jpg?hmac=nC0ge4pSLWRgvo95xirIb1usWSLDart07cBldzt9lG8",
+    "code": "POST124",
+    "stock": "11",
+    "status": true,
+    "category": "categoria POSTMAN"
   }
 ]

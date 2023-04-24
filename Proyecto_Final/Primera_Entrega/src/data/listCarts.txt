@@ -1,82 +1,11 @@
 [
   {
-    "idCart": 2,
-    "timestamp": 1659632342620,
-    "user": "admin",
+    "idCart": 1,
+    "timestamp": 1682339881903,
     "products": [
       {
-        "id": 2,
-        "timestamp": 1659616039569,
-        "title": "Producto 2",
-        "description": "Descripción 2",
-        "code": "CODIG2",
-        "thumbnail": "https://i.picsum.photos/id/788/200/300.jpg?hmac=86XnLHCHcI7HWgr9Y662VsXxUxs7H70DjGHc_6iaIw4",
-        "price": "200",
-        "stock": "20"
-      },
-      {
-        "id": 1,
-        "timestamp": 1659615995235,
-        "title": "Producto 1",
-        "description": "Descripcion 1",
-        "code": "CODIGO1",
-        "thumbnail": "https://i.picsum.photos/id/810/200/300.jpg?hmac=HgwlXd-OaLOAqhGyCiZDUb_75EgUI4u0GtS7nfgxd8s",
-        "price": "100",
-        "stock": "10"
-      }
-    ]
-  },
-  {
-    "idCart": 4,
-    "timestamp": 1659632872209,
-    "user": "admin",
-    "products": [
-      {
-        "id": 3,
-        "timestamp": 1659616064904,
-        "title": "Producto 3",
-        "description": "Descripcion lámina 3",
-        "code": "CODIGO-LAMINA-3",
-        "thumbnail": "https://i.picsum.photos/id/1084/200/300.jpg?hmac=JQMQbKvpN6_d6r-fiuOEYe1Dz6f2gfGIkTvsx0nLJUQ",
-        "price": "300",
-        "stock": "30"
-      }
-    ]
-  },
-  {
-    "idCart": 5,
-    "timestamp": 1659831833564,
-    "user": "maria",
-    "products": [
-      {
-        "id": 3,
-        "timestamp": 1659616064904,
-        "title": "Producto 3",
-        "description": "Descripcion lámina 3",
-        "code": "CODIGO-LAMINA-3",
-        "thumbnail": "https://i.picsum.photos/id/1084/200/300.jpg?hmac=JQMQbKvpN6_d6r-fiuOEYe1Dz6f2gfGIkTvsx0nLJUQ",
-        "price": "300",
-        "stock": "30"
-      },
-      {
-        "id": 4,
-        "timestamp": 1659616102679,
-        "title": "Producto 4",
-        "description": "Descripción 4",
-        "code": "CODIG4",
-        "thumbnail": "https://i.picsum.photos/id/1079/200/300.jpg?hmac=2_Q-8QGaabS7GsZLCCM2JvTkNhZFjwv5K2wVnJ8CjKI",
-        "price": "400",
-        "stock": "40"
-      },
-      {
-        "id": 4,
-        "timestamp": 1659616102679,
-        "title": "Producto 4",
-        "description": "Descripción 4",
-        "code": "CODIG4",
-        "thumbnail": "https://i.picsum.photos/id/1079/200/300.jpg?hmac=2_Q-8QGaabS7GsZLCCM2JvTkNhZFjwv5K2wVnJ8CjKI",
-        "price": "400",
-        "stock": "40"
+        "id": "13",
+        "quantity": 6
       }
     ]
   }
