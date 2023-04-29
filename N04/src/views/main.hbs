@@ -1,0 +1,48 @@
+<main>
+
+        <h4 class="p-3 fw-bold textColor">Lista de productos</h4>
+
+        {{#if productsExists}}
+            <div class="d-flex flex-wrap justify-content-around">
+                {{#each prods}}
+                <div class="card m-2 cardStyle" style="width: 18rem;">
+                    <a href="/api/products/{{this.id}}" class="position-relative"><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill spanCard">{{this.id}}</span><img src="{{this.thumbnail}}" class="card-img-top imgCard" alt="{{this.title}}"></a>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="d-flex flex-wrap justify-content-between">
+                                <div class="col align-self-center">
+                                    <h5 class="card-title">{{this.title}}</h5>
+                                </div>
+                                <div class="col-2">
+                                    <form class="container" action="/api/products/delete/{{this.id}}" method="post">
+                                        <input type="hidden" name="id" value={{this.id}}>
+                                        <button type="submit" class="btn col"><img class="deleteIcon" src="https://cdn.icon-icons.com/icons2/692/PNG/512/seo-social-web-network-internet_262_icon-icons.com_61518.png" alt=""></button>
+                                    </form>
+                                </div>
+                                <div class="col-2">
+                                    <form class="container" action="/api/products/update/{{this.id}}" method="get">
+                                        <input type="hidden" name="id" value={{this.id}}>
+                                        <button type="submit" class="btn col"><img class="deleteIcon" src="https://cdn.icon-icons.com/icons2/1883/PNG/512/twocirclingarrows1_120592.png" alt=""></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge stockStyle">STOCK: {{this.stock}}</span>
+                        <p class="card-text">{{this.description}}</p>
+                        <div class="d-flex flex-wrap justify-content-between">
+                            <p class="card-text"><b>$ {{this.price}}</b></p>
+                            <span class="badge categoryStyle align-self-center">{{this.category}}</span>
+                        </div>                       
+                        
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+
+        {{else}}
+            <div class="container-fluid">
+                <h4 class="alert alert-danger">No se encontraron productos</h4>
+            </div>
+        {{/if}}
+    </div>
+</main>

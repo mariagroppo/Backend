@@ -1,0 +1,48 @@
+/* Gris oscuro #393D40
+Gris claro: #F1EDEA
+Gris medio: #636363
+Naranja: #EE7500
+piel: #D69764
+ */
+
+body {
+    background-color: #383b3d;
+}
+
+.textColor {
+    color: white;
+}
+
+.newProductContainer {
+    background-color: #636363;
+}
+
+.cardStyle{
+    border: 1px solid ;
+    box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+    border-radius:15px;
+}
+
+.stockStyle {
+    background-color: #636363;
+}
+
+.categoryStyle {
+    background-color: #D69764;
+}
+
+.addButtonStyle {
+    background-color: #EE7500;
+}
+
+.deleteIcon {
+    width: 20px;
+}
+
+.spanCard {
+    background-color:  #EE7500;
+}
+
+.buttonContainer {
+    display: inline-block;
+}
