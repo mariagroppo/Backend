@@ -2,8 +2,6 @@ import express from 'express';
 
 import { getProducts, 
     getProductById,
-    updateProductByIdForm,
-    addNewProductForm,
     addNewProduct,
     updateProductById,
     deleteProductById

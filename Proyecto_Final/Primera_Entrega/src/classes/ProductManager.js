@@ -1,5 +1,6 @@
-/* Copia del desafio N01 */
 import fs from 'fs';
+
+/*  */
 
 class ProductManager {
     /* Atributos */
@@ -12,11 +13,10 @@ class ProductManager {
         let contenido;
         try {
             contenido = await fs.promises.readFile(this.path, 'utf-8');
-            return JSON.parse(contenido);
+            return { status: 'success', message: "Products ok.", value: JSON.parse(contenido)}
         } catch (error) {
             contenido=[];
-            console.log('Error en getProducts: ', error);
-            return contenido;
+            return { status: 'error', message: "Error en getProducts.", value: error}
         }
     } 
 
@@ -25,54 +25,59 @@ class ProductManager {
         try {
             const list = await this.getProducts();
             let maxId=0;
-            if (list.length === 0) {
+            if (list.value.length === 0) {
                 maxId=1;
             } else {
-                list.forEach(value => {
+                list.value.forEach(value => {
                     if (value.id > maxId) {
                         maxId=value.id
                     }
                 })
                 maxId=maxId+1;
             }
-            return maxId;
+            return { status: 'success', message: `Assigned product ID ${maxId} added.`, value: maxId}
         } catch (error) {
-            console.log("Error en asignId: " + error);    
+            return { status: 'error', message: `ProductManager asignId error: ${error}.`, value: null}    
         }
     }
 
     /* Con la informacion de un producto, crea el array newProd */
     getFullProduct = async (product) => {
         try {
-            const newProd = {
-                id: await this.asignId(),
-                title: product.title,
-                description: product.description,
-                price: product.price,
-                thumbnail: product.thumbnail,
-                code: product.code,
-                stock: product.stock,
-                status: true,
-                category: product.category
+            let id = await this.asignId();
+            if (id) {
+                const newProd = {
+                    id: id.value,
+                    title: product.title,
+                    description: product.description,
+                    price: parseFloat(product.price),
+                    thumbnails: [product.thumbnails],
+                    code: product.code,
+                    stock: parseInt(product.stock),
+                    status: true,
+                    category: product.category
+                }
+                return { status: 'success', message: `New product structure ${newProd}.`, value: newProd}
+            } else {
+                return { status: 'error', message: `Error asignId error: ${id.message}.`, value: null}   
             }
-            return newProd;
         } catch (error) {
-            console.log("Error en getFullProduct: " + error);  
+            return { status: 'error', message: `ProductManager getFullProduct error: ${error}.`, value: null}
         }
     }
 
     /* Verifica que el codigo del producto a agregar no este repetido */
-    verifyCode = async (code) => {
+    repeatCode = async (code) => {
         try {
             const list = await this.getProducts();
-            for (let i=0; i<list.length; i++){
-                if (list[i].code===code) {
-                    return false
+            for (let i=0; i<list.value.length; i++){
+                if (list.value[i].code===code) {
+                    return { status: 'error', message: `Code already in use.`, value: true}
                 }
             }
-            return true
+            return { status: 'success', message: `Code not used.`, value: false}
         } catch (error) {
-            console.log("Error en verifyCode: " + error);    
+            return { status: 'error', message: `ProductManager repeatCode error: ${error}.`, value: true}
         }
     }
 
@@ -81,36 +86,53 @@ class ProductManager {
     addProduct = async (product) => {
         try {
             const newProd = await this.getFullProduct(product);
-            const repeatCode = await this.verifyCode(newProd.code);
+            const repeatCode = await this.repeatCode(newProd.value.code);
             const listOfProducts = await this.getProducts();
-            if (repeatCode){
-                listOfProducts.push(newProd);
-                await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts, null,2));
-                console.log("Producto ", newProd.id, " agregado");
-            } else if (!repeatCode) {
-                console.log("El producto ", newProd.id, " no puede agregar por codigo repetido.")
+            if (!repeatCode.value){
+                listOfProducts.value.push(newProd.value);
+                await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts.value, null,2));
+                return { status: 'success', message: `Product ID ${newProd.value.id} added.`, value: newProd}
+            } else {
+                return { status: 'error', message: `${repeatCode.message}`, value: null}
             }
         } catch (error) {
-            console.log("Error en addProduct: " + error);    
+            return { status: 'error', message: `Error en addProduct`, value: null} 
         }
     } 
+
+
+    validateFields =  async (product) => {
+        try {
+            if ( (typeof product.title === 'undefined') 
+                || (typeof product.description === 'undefined') 
+                || (typeof product.code === 'undefined')
+                || (typeof product.thumbnails === 'undefined')
+                || (typeof product.price === 'undefined')
+                || (typeof product.stock === 'undefined')
+                || (typeof product.category === 'undefined')
+            ){
+                return { status: 'error', message: `All fields shall be completed.`, value: false}
+            } else {
+                return { status: 'success', message: `All fields are completed.`, value: true}
+            }
+        } catch (error) {
+            return { status: 'error', message: `ProductManager validateFields error: ${error}`, value: false}
+        }
+    }
 
     /*  Busca en el arreglo el producto que coincida con el id. En caso de no coincidir ningún id, 
     Muestra en consola un error “Not found” */
     getProductById = async (number) => {
         try {
             const listOfProducts = await this.getProducts();
-            let product = listOfProducts.find(prod => prod.id === parseInt(number));
+            let product = listOfProducts.value.find(prod => prod.id === parseInt(number));
             if (!product) {
-                /* console.log("Producto con id " + number + " no encontrado.") */
-                return null
+                return { status: 'error', message: `Product ID ${number} do not exists.`, value: null}
             } else {
-                /* console.log("Producto con id " + number + " encontrado."); */
-                return product
+                return { status: 'success', message: "Product founded.", value: product}
             }
         } catch (error) {
-            console.log("Error en getProductById: " + error);
-            return null;    
+            return { status: 'error', message: "Error en getProductById.", value: null}
         }
     }
     
@@ -119,20 +141,20 @@ class ProductManager {
         try {
             const listOfProducts = await this.getProducts();
             let founded = false;
-            for (let i = 0; i < listOfProducts.length; i++) {
-                if (listOfProducts[i].id === number) {
-                    listOfProducts.splice(i,1);
+            for (let i = 0; i < listOfProducts.value.length; i++) {
+                if (listOfProducts.value[i].id === number) {
+                    listOfProducts.value.splice(i,1);
                     founded = true;
                 }
             }
             if (founded) {
-                await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts, null,2));
-               /*  console.log("Producto ID " + number + " eliminado.") */
+                await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts.value, null,2));
+                return { status: 'succes', message: `Product ID ${number} deleted.`, value: null}
             } else {
-                console.log("Producto ID " + number + " no encontrado.")
+                return { status: 'error', message: `Product ID ${number} do not exists.`, value: null}
             }
         } catch (error) {
-            console.log("Error en deleteById: " + error);
+            return { status: 'error', message: `ProductManager deleteById error: ${error}.`, value: null}
         }
     }    
 
@@ -147,16 +169,22 @@ class ProductManager {
 
     updateProductById = async (number, product) => {
         try {
-            const listOfProducts = await this.getProducts();
-            for (let i = 0; i < listOfProducts.length; i++) {
-                if (listOfProducts[i].id === parseInt(number)) {
-                    listOfProducts[i] = { ...listOfProducts[i], ...product };
-                    await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts, null,2));
-                    /* console.log("Producto ID " + number + " actualizado.") */
+            let prod = await this.getProductById(number);
+            if (prod.value) {
+                const newProd = {...prod.value, ...product}
+                const listOfProducts = await this.getProducts();
+                for (let i = 0; i < listOfProducts.value.length; i++) {
+                    if (listOfProducts.value[i].id === parseInt(number)) {
+                        listOfProducts.value[i] = { ...listOfProducts.value[i], ...newProd };
+                        await fs.promises.writeFile(this.path, JSON.stringify(listOfProducts.value, null,2));
+                    }
                 }
+                return { status: 'success', message: `Product ID ${number} updated.`, value: true}
+            } else {
+                return { status: 'error', message: prod.message, value: false}
             }
         } catch (error) {
-            console.log("Error en updateProductById: " + error);
+            return { status: 'error', message: `ProductManager updateProductById error: ${error}`, value: false}
         }
     }
 }

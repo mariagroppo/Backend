@@ -1,0 +1,10 @@
+- LIMIT: agregue mensajes e caso de limit erróneo, y corregi en caso de que el número sea mayor a la cantidad de productos.
+- Agregue return en todas las funciones de Product Manager.
+- ADD PRODUCT:
+    - Cambie thumbnails.
+    - Paso price y stock a numero.
+    - Cambie valor del boolean en repeatCode.
+    - Agregue una valdación de campos.
+- UPDATE PRODUCT:
+    - Use el codigo que me pasaste por el video.
+    

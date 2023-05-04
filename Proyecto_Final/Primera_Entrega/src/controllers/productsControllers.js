@@ -6,24 +6,29 @@ export const getProducts = async (req, res) => {
     try {
         let { limit } = req.query;
         let listado = await productsList.getProducts();
-        if (listado.length>0) {
-            if (!limit) {
-                /* res.render('../src/views/main.hbs', { prods: listado, productsExists: true }) */
-                res.send(listado);
+        if (!limit) {
+            if (listado.value.length>0){
+                res.send(listado.value);
             } else {
-                let newArray = [];
-                for (let i=0; i<parseInt(limit); i++) {
-                    newArray.push(listado[i]);
-                }
-                /* res.render('../src/views/main.hbs', { prods: newArray, productsExists: true }) */
-                res.send(newArray);
+                res.status(400).send("No hay productos.");
             }
         } else {
-            /* res.render('../src/views/main.hbs', { prods: listado, productsExists: false }) */
-            res.send("No hay productos.")
+            if (isNaN(parseInt(limit)) || parseInt(limit)<0 ) {
+                res.status(400).send("El limite debe ser un numero entero positivo.");
+            } else {
+                let newArray = [];
+                if (parseInt(limit) < listado.value.length) {
+                    for (let i=0; i<parseInt(limit); i++) {
+                        newArray.push(listado.value[i]);
+                    }
+                } else {
+                    newArray = listado.value;
+                }
+                res.send(newArray);
+            }
         }
     } catch (error) {
-        console.log("getProducts Controller error: " + error);
+        res.status(400).send("getProducts Controller error: " + error);
     }
 
 }
@@ -35,57 +40,50 @@ export const getProductById = async (req, res) => {
             res.status(400).send({ error: 'El parámetro no es un número.'})    
         } else {
             let prod = await productsList.getProductById(id);
-            if (!prod) {
-                res.send("Producto no encontrado")
+            if (!prod.value) {
+                res.send(prod.message)
             } else {
                 /* res.render('../src/views/partials/lookForId.hbs', { prod: prod, productsExists: true }) */
-                res.send(prod);
+                res.send(prod.value);
             }
         }
     } catch (error) {
-        console.log("getProductById Controller error: " + error);
+        res.send("getProductById Controller error: " + error);
     }
 
 }
 
-export const addNewProductForm = async (req, res) => {
+/* export const addNewProductForm = async (req, res) => {
     try {
         res.render('../src/views/partials/newProduct.hbs')
     } catch (error) {
         console.log("editProducts Controller error: " + error);    
     }
-}
+} */
 
 export const addNewProduct = async (req, res) => {
     try {
-        const {title, description, code, thumbnail, price, stock, category} = req.body;
-        let validateFields=true;
-        if ( (title === "") 
-            || (description === "") 
-            || (code === "")
-            || (thumbnail === "")
-            || (price === "")
-            || (stock === "")
-            || (category === "")
-        ){
-            validateFields=false;
-        }
-        if (validateFields === true) {
-            const prod = {title, description, code, thumbnail, price, stock, category};
+        const {title, description, code, thumbnails, price, stock, category} = req.body;
+        let validateFields= await productsList.validateFields(req.body);
+        if (validateFields.value === true) {
+            const prod = {title, description, code, thumbnails, price, stock, category};
             const newProd = await productsList.addProduct(prod);
-            res.send("Producto agregado: " + newProd);
-            /* res.redirect('/api/products'); */    
+            if (newProd.status === 'success') {
+                res.send(newProd.message);
+            } else {
+                res.send(newProd.message);
+            }
         } else {
-            console.log("Todos los campos deben estar completos.");    
+            res.send(validateFields.message)    
         }
         req.body.reset;
     } catch (error) {
-        console.log("addNewProduct Controller error: " + error);    
+        res.send("addNewProduct Controller error: " + error);    
     }
     
  }
 
-export const updateProductByIdForm = async (req, res) => {
+/* export const updateProductByIdForm = async (req, res) => {
     try {
         let id = req.params.id;
         if (isNaN(id)){
@@ -102,33 +100,21 @@ export const updateProductByIdForm = async (req, res) => {
     } catch (error) {
         console.log("updateProductByIdForm error: " + error);
     }
- }
+ } */
 
 export const updateProductById = async (req, res) => {
     try {
-        const {title, description, code, thumbnail, price, stock, category} = req.body;
+        const prodToUpdate = req.body;
         let id = req.params.id;
-        const newProd = {
-            id: parseInt(id),
-            title: title,
-            description: description,
-            code: code,
-            thumbnail: thumbnail,
-            price: price,
-            stock: stock,
-            category: category
-        }
-        /* console.log(newProd) */
         if (isNaN(id)){
             res.status(400).send({ error: 'El parámetro no es un número.'})    
         } else {
-            await productsList.updateProductById(id, newProd);
-            /* res.redirect('/api/products'); */
-            res.send("Producto " + newProd.id + " actualizado. ")
+            let updated = await productsList.updateProductById(id, prodToUpdate);
+            res.send(updated.message)
         }
         
     } catch (error) {
-        console.log("Error en updateProductById: " + error);
+        res.send("Error en updateProductById: " + error);
     }
 }
 
@@ -136,12 +122,12 @@ export const deleteProductById = async(req,res)=> {
     try {
         let id = parseInt(req.params.id);
         if (!isNaN(id)) {
-            await productsList.deleteById(id);
-            res.redirect('/api/products');
+            let deleted = await productsList.deleteById(id);
+            res.send(deleted.message);
         } else {
             res.status(400).send({ error: 'El parámetro no es un número.'}) 
         }
     } catch (error) {
-        console.log("Error en deleProductById: " + error)
+        res.send("Error en deleProductById: " + error);
     }
 }
