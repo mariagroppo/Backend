@@ -1,7 +1,7 @@
 import ProductManager from '../classes/fs/productManager.js';
 let listOfProducts = new ProductManager('./src/productos.txt');
 
-import MessageMongoDB from "../classes/mongodb/prodsMongoDB.js";
+import MessageMongoDB from "../classes/mongodb/chatMongoDB.js";
 const chatMongo = new MessageMongoDB();
 
 import { prodsMongo } from '../controllers/controllers.js';
@@ -53,13 +53,13 @@ export default function socketProducts(socketServer){
         /* CHAT ------------------------------------------------------------------------- */
         socket.on('msg', async msg =>{
             let answer;
-            console.log("Desde socket el msg:")
-            console.log(msg)
+            //console.log("Desde socket el msg:")
+            //console.log(msg)
             if (db === 'fs') {
 
             } else {
                 answer = await chatMongo.save(msg);
-                console.log(answer.message)
+                //console.log(answer.message)
             }
             /* messages.push(data); */
             let messages = await chatMongo.getAll();

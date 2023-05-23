@@ -89,3 +89,10 @@ body {
     text-align:center;
 }
 
+.chatSpace {
+    height:70vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    word-wrap: break-word;
+
+}

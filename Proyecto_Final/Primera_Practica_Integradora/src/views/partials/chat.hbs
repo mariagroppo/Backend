@@ -1,20 +1,16 @@
 <main>
 
-    <div class="d-flex">
-        <div class="">
-            <label class="textColor">Ingrese su mensaje:</label>
-            <div class="d-flex justify-content-between">
-                <div class="col-9">
+    <div class="col">
+        <div class="row">
+            <div class="row">
+                <label class="textColor">Ingrese su mensaje:</label>
+                <div class="d-flex">
                     <input type="text" class="chatbox m-2" id="chatbox">
-                </div>
-                <div class="col text-center m-2">
                     <button class="sendButton" id="sendButton">OK</button>
                 </div>
             </div>
-            <div class="m-2">
-                <p class="d-flex textColor" id="logs"></p>
-            </div>
         </div>
+        <div class="m-2 textColor chatSpace bg-secondary" id="logs" data-bs-spy="scroll"></div>
 
     </div>
         

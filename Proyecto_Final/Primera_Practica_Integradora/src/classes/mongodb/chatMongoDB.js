@@ -10,7 +10,8 @@ class MessageMongoDB {
             for (let i = 0; i < contenido.length; i++) {
                 contenido2[i]._id = contenido[i]._id.toString();
             }
-            console.log(contenido2)
+            //console.log("getAll messages")
+            //console.log(contenido2)
             return { status: 'success', message: "Messages ok.", value: contenido2}
             
         } catch (error) {
@@ -20,14 +21,14 @@ class MessageMongoDB {
 
     save = async (newMessage) => {
         try {
-            console.log(newMessage)
             let newMess = new Message(newMessage);
+            //console.log("Newmess en chatMongoDB.js: " + newMessage)
             await newMess.save();
-            console.log("msg guardado")
+            //console.log("msg guardado")
             return { status: 'success', message: "Message saved.", value: true}
         } catch (error) {
-            console.log("msg no guardado")
-            return { status: 'error', message: "Message not saved.", value: false}
+            //console.log("msg no guardado")
+            return { status: 'error', message: "Message not saved." + error, value: false}
         }
     } 
 
