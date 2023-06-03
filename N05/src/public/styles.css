@@ -1,0 +1,135 @@
+/* Gris oscuro #393D40
+Gris claro: #F1EDEA
+Gris medio: #636363
+Naranja: #EE7500
+piel: #D69764
+ */
+
+body {
+    background-color: #383b3d;
+}
+
+.textColor {
+    color: white;
+}
+
+/* .home {
+    width: 50%;
+    height: auto;
+} */
+
+.newProductContainer {
+    background-color: #636363;
+}
+
+.cardStyle{
+    border: 1px solid ;
+    box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+    border-radius:15px;
+}
+
+.stockStyle {
+    background-color: #636363;
+}
+
+.categoryStyle {
+    background-color: #D69764;
+}
+
+.addButtonStyle {
+    background-color: #EE7500;
+}
+
+.deleteIcon {
+    width: 20px;
+}
+
+.spanCard {
+    background-color:  #EE7500;
+}
+
+.buttonContainer {
+    display: inline-block;
+}
+
+.fontColor {
+    color: white
+}
+
+.productQtyInput{
+    border: 1px solid grey;
+    color: black;
+    padding: 0px;
+    text-decoration: none;
+    margin: 0px;
+    text-align: center;
+    border-radius: 8px;
+    width: 30px;
+    text-align:center;
+}
+
+.btnRest, .btnSum, .btnOK {
+    background-color: rgb(188, 175, 175);
+    border: 2px solid black;
+    color: black;
+    padding: 0px;
+    text-decoration: none;
+    margin: 0px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 8px;
+    width: 30px;
+    text-align:center;
+}
+
+.cartInput{
+    border: 1px solid grey;
+    color: black;
+    padding: 0px;
+    text-decoration: none;
+    margin: 0px;
+    text-align: center;
+    border-radius: 8px;
+    width: 30px;
+    text-align:center;
+}
+
+.chatSpace {
+    height:70vh;
+    overflow: hidden;
+    overflow-y: scroll;
+    word-wrap: break-word;
+
+}
+
+
+/* Filtros ---------------------------------------------------------------- */
+.dropdown-menu li {
+    position: relative;
+}
+
+.dropdown-menu .dropdown-submenu {
+    display: none;
+    position: absolute;
+    right: 100%;
+    top: -7px;
+}
+
+.dropdown-menu {
+    right: 100%;
+    /* left: auto; */
+}
+
+.dropdown-menu > li:hover > .dropdown-submenu {
+    display: block;
+}
+
+
+.groupButtons input{
+    width: 30px;
+    text-align: center;
+}
+
+.col1 {
+    width: 140px;
+}

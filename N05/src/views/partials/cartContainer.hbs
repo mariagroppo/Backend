@@ -1,0 +1,78 @@
+<div class="tipografia">
+    <div class="container">
+        <div class="col-4 fw-bold fs-3 fontColor">
+            CARRITO N°: {{cart.idCart}}
+        </div>
+    </div>
+    
+    <h3 class="p-3 fw-bold fontColor">PRODUCTOS</h3>
+
+    <div class="container-fluid fontColor">
+        {{#if pExist}}
+            <form class="" action="/api/carts/updateCart/{{cart.idCart}}" method="post">
+                <table class="table">
+                    <thead class="">
+                        <tr class="text-center fontColor">
+                            <th class="col1">ID Producto</th>
+                            <th class="col1">Cantidad</th>
+                            <th>Nombre del producto</th>
+                            <th>Descripción</th>
+                            <th>Código</th>
+                            <th>Imagen</th>
+                            <th class="col1">Precio unitario</th>
+                            <th class="col1"></th>    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each cart.products}}  
+                            <tr class="text-center align-middle fontColor">
+                                <td class="col1">
+                                    <input type="hidden" name={{this.id}} value={{this.id}}>
+                                    {{this.id}}
+                                </td>
+                                <input type="hidden" class="productQtyInput2" id={{this.id}} value={{this.quantity}}>
+                                <td class="col1 groupButtons">
+                                    <button type="button" id="btnRest2" name={{this.id}} class="btn col btnRest">-</button>
+                                    <input class="productQtyInput2" name={{this.id}} id={{this.id}} value={{this.quantity}}>
+                                    <button type="button" id="btnSum2" name={{this.id}} class="btn col btnSum">+</button>
+                                </td>
+                                <td>
+                                    {{this.title}}
+                                </td>
+                                <td>
+                                    {{this.description}}
+                                </td>
+                                <td>
+                                    {{this.code}}
+                                </td>
+                                <td>
+                                    <img class="rounded mx-auto d-block imagenProducto" src={{this.thumbnail}}>
+                                </td>
+                                <td class="col1">
+                                    {{this.price}}
+                                </td>
+                                <td class="col1">
+                                    <div>
+                                        <form class="container" action="/api/carts/deleteProduct/{{this.id}}" method="post">
+                                            <input type="hidden" name="idCart" value={{../cart.idCart}}>
+                                            <button type="submit" class="btn btn-danger m-2 col">X</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+                <input type="hidden" name="idCart" value={{cart.idCart}}>
+                <button type="submit" class="btn btn-success m-2 col">Guardar cambios</button>
+            </form>
+            
+        {{else}}
+            <div class="container-fluid">
+                <h4 class="alert alert-danger">No hay productos</h4>
+            </div> 
+        {{/if}}
+    </div>
+
+</div>
+<script src="/updateCart.js"></script> 
