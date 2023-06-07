@@ -10,22 +10,25 @@ import { addNewCart,
 } from '../controllers/controllersCarts.js';
 const routerCarts = express.Router();
 
-/* GET Vista de todos los productos -------------------------------- */
+/* Devuelve todos los carts -------------------------------- */
 routerCarts.get('/', getCarts);
 
-/* creacion de un carrito ------------------------------------------- */
-routerCarts.get('/addNewCart', addNewCart);
+/* Crea un nuevo carrito ------------------------------------------- */
+routerCarts.post('/', addNewCart);
 
-/* devuelve un producto segùn su id */
+/* Devuelve un carrito segùn su id */
 routerCarts.get('/:cid', getCartById)
 
-/* Borra carrito entero segun su id */
-routerCarts.post('/delete/:cid', deleteCartById)
+/* Borra carrito segun su id */
+routerCarts.delete('/:cid', deleteCartById)
 
-routerCarts.post('/deleteProduct/:id', deleteProduct)
+/* Agregar producto a carrito abierto */
+routerCarts.post('/:cid/product/:pid', addProductInCart);
 
-routerCarts.post('/:id', addProductInCart);
+/* Borra producto de carrito */
+routerCarts.delete('/:cid/product/:id', deleteProduct)
 
-routerCarts.post('/updateCart/:cid', updateCart)
+/* Actualiza la cantidad de un producto del carrito */
+routerCarts.put('/:cid/product/:id', updateCart)
 
 export default routerCarts;

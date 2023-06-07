@@ -24,11 +24,15 @@ class ProductMongoDB {
 
     getById = async (number) => {
         try {
-            let product = await Product.findOne({id: number}).lean();
-            if (!product) {
-                return { status: 'error', message: `Product ID ${number} do not exists.`, value: null}
+            if (parseInt(number) > 0) {
+                let product = await Product.findOne({id: number}).lean();
+                if (!product) {
+                    return { status: 'error', message: `Product ID ${number} do not exists.`, value: null}
+                } else {
+                    return { status: 'success', message: "Product founded.", value: product}
+                }
             } else {
-                return { status: 'success', message: "Product founded.", value: product}
+                return { status: 'error', message: "Product ID is not valid.", value: null}
             }
         } catch (error) {
             return { status: 'error', message: "Error en getById MongoDB: " + error, value: null}
@@ -63,17 +67,13 @@ class ProductMongoDB {
             const list = await Product.aggregate([
                 {$sort: {price:1}}
             ])
-            //console.log(list)
             for (let i=0; i<list.length; i++){
                 if (list[i].code===code) {
-                    //console.log(`Code already in use.`)
                     return { status: 'error', message: `Code already in use.`, value: true}
                 }
             }
-            //console.log(`Code not used.`)
             return { status: 'success', message: `Code not used.`, value: false}
         } catch (error) {
-            //console.log(error)
             return { status: 'error', message: `ProductManager repeatCode error: ${error}.`, value: true}
         }
     }
@@ -82,7 +82,6 @@ class ProductMongoDB {
         try {
             const idProd = await this.asignId();
             let id = idProd.value;
-            //console.log("Se asigna id: " + id);
             const repeatCode = await this.repeatCode(newProduct.code);
             if (!repeatCode.value){
                 const title=newProduct.title;
@@ -95,7 +94,6 @@ class ProductMongoDB {
                 const prod = {id, title, thumbnail, price, code, category, stock, description};
     
                 const newProd = new Product(prod);
-                //console.log("newProd del manager saver: " + newProd)
                 await newProd.save();
                 return { status: 'success', message: `Producto cargado.`, value: newProd}
             } else {
@@ -103,7 +101,6 @@ class ProductMongoDB {
             }
             
         } catch (error) {
-            //console.log(error)
             return { status: 'error', message: `ProductManager save Mongo DB error: ${error}.`, value: false}
         }
         
@@ -111,10 +108,19 @@ class ProductMongoDB {
 
     deleteById = async (id) => {
         try {
-            await Product.deleteOne({
-                id: id
-            })
-            return { status: 'success', message: "Product deleted.", value: true}
+            if (parseInt(id)>0) {
+                let answer = await this.getById(id);
+                if (answer.status === 'success') {
+                    await Product.deleteOne({
+                        id: id
+                    })
+                    return { status: 'success', message: `Product ${id} deleted.`, value: true}
+                } else {
+                    return { status: 'error', message: `Product ${id} do not exists.`, value: false}
+                }
+            } else {
+                return { status: 'errr', message: "The ID must be an integer.", value: false}
+            }
         } catch (error) {
             return { status: 'error', message: "Error en deleteById MongoDB: " + error, value: false}
         }
@@ -125,8 +131,6 @@ class ProductMongoDB {
     updateById = async (prod) => {
         let number=prod.id;
         let newObject = await Product.findOne({id: number});
-        /* console.log("new objetc");
-        console.log(newObject) */
         if (newObject === []) {
             return { status: 'error', message: `Product ID ${number} do not exists.`, value: false}
         } else {
@@ -148,8 +152,6 @@ class ProductMongoDB {
             if (prod.category != "" ) {
                 newObject.category=prod.category
             }
-            /* console.log("NEW OBJECT");
-            console.log(newObject); */
         }
         
         await Product.updateOne({id: number}, newObject)
@@ -157,7 +159,26 @@ class ProductMongoDB {
     
     }
 
-    infoProducts = async (cart) => {
+    validateFields =  async (product) => {
+        try {
+            if ( (typeof product.title === 'undefined') 
+                || (typeof product.description === 'undefined') 
+                || (typeof product.code === 'undefined')
+                || (typeof product.thumbnail === 'undefined')
+                || (typeof product.price === 'undefined')
+                || (typeof product.stock === 'undefined')
+                || (typeof product.category === 'undefined')
+            ){
+                return { status: 'error', message: `All fields shall be completed.`, value: false}
+            } else {
+                return { status: 'success', message: `All fields are completed.`, value: true}
+            }
+        } catch (error) {
+            return { status: 'error', message: `ProductManager validateFields error: ${error}`, value: false}
+        }
+    }
+
+    /* infoProducts = async (cart) => {
         try {
             let info = [];
             let listado = await Product.find().lean();
@@ -184,13 +205,12 @@ class ProductMongoDB {
                 }
                 cart.products=info;
             }
-            //console.log(cart)
             return cart
         } catch (error) {
             console.log(error)
             return null;
         }
-    }
+    } */
 }
 
 export default ProductMongoDB;

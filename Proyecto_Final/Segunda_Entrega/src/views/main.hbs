@@ -1,30 +1,9 @@
 <main>
         <div class="d-flex justify-content-between">
             <h4 class="p-3 fw-bold textColor">Lista de productos</h4>
-            {{!-- <div class="dropdown p-3">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    Filtrar por...
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Categoria &raquo</a>
-                        <ul class="dropdown-menu dropdown-submenu">
-                            <a class="dropdown-item" href="/api/products?category=Categoria 1">Categoria 1</a>
-                            </li>
-                            <li>
-                            <a class="dropdown-item" href="/api/products?category=Categoria 2">Categoria 2</a>
-                            </li>
-                            <li>
-                            <a class="dropdown-item" href="/api/products?category=Categoria 3">Categoria 3</a>
-                            </li>
-                            <li>
-                            <a class="dropdown-item" href="/api/products?category=Categoria 4">Categoria 4</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li><a class="dropdown-item" href="/api/products?sort=-1">De menor a mayor precio</a></li>
-                    <li><a class="dropdown-item" href="#">De mayor a menor precio</a></li>
-                </ul>
-            </div> --}}
+        </div>
+        <div class="mb-3">
+            <a href="/views/products/add"><button type="button" class="btn btn-success">Agregar nuevo producto</button></a>
         </div>
 
         <div class="bigContainer">
@@ -58,7 +37,7 @@
             <div class="d-flex flex-wrap justify-content-around">
                 {{#each prods}}
                 <div class="card m-2 cardStyle" style="width: 18rem;">
-                    <a href="/api/products/{{this.id}}" class="position-relative"><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill spanCard">{{this.id}}</span><img src="{{this.thumbnail}}" class="card-img-top imgCard" alt="{{this.title}}"></a>
+                    <a href="/views/products/{{this.id}}" class="position-relative"><span class="position-absolute top-0 start-100 translate-middle badge rounded-pill spanCard">{{this.id}}</span><img src="{{this.thumbnail}}" class="card-img-top imgCard" alt="{{this.title}}"></a>
                     <div class="card-body">
                         <div class="container">
                             <div class="d-flex flex-wrap justify-content-between">
@@ -66,13 +45,13 @@
                                     <h5 class="card-title">{{this.title}}</h5>
                                 </div>
                                 <div class="col-2">
-                                    <form class="container" action="/api/products/delete/{{this.id}}" method="post">
+                                    <form class="container" action="/views/products/delete/{{this.id}}" method="post">
                                         <input type="hidden" name="id" value={{this.id}}>
                                         <button type="submit" class="btn col"><img class="deleteIcon" src="https://cdn.icon-icons.com/icons2/692/PNG/512/seo-social-web-network-internet_262_icon-icons.com_61518.png" alt=""></button>
                                     </form>
                                 </div>
                                 <div class="col-2">
-                                    <form class="container" action="/api/products/update/{{this.id}}" method="get">
+                                    <form class="container" action="/views/products/update/{{this.id}}" method="get">
                                         <input type="hidden" name="id" value={{this.id}}>
                                         <button type="submit" class="btn col"><img class="deleteIcon" src="https://cdn.icon-icons.com/icons2/3960/PNG/512/refresh_arrows_habit_reload_again_sync_icon_252398.png" alt=""></button>
                                     </form>
@@ -81,10 +60,20 @@
                             <div class="d-flex mb-3">
                                 <div class="col-6 d-inline">
                                     <button type="button" id="btnRest" name={{this.id}} class="btn col btnRest">-</button>
-                                    <input class="productQtyInput" id={{this.id}}>
+                                    <input class="productQtyInput" id={{this.id}} value="0">
                                     <button type="button" id="btnSum" name={{this.id}} class="btn col btnSum">+</button>
                                 </div>
                                 <div class="d-flex d-inline">
+                                    
+                                    <div class="">
+                                        <form class="" action="/views/carts/product/{{this.id}}" method="post">
+                                            <input type="hidden" id={{this.id}} name="productQtyInput" class="productQtyInput">                                            
+                                            <button type="submit" id={{this.id}} class="btn col bg-secondary">Agregar</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                                {{!-- <div class="d-flex d-inline">
                                     
                                     <div class="">
                                         <form class="d-flex d-inline" action="/api/carts/{{this.id}}" method="post">
@@ -97,7 +86,7 @@
                                         </form>
                                     </div>
 
-                                </div>
+                                </div> --}}
                                 
 
                             </div>

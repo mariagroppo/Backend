@@ -17,24 +17,21 @@ export const getProducts = async (req, res) => {
         }
         
         if (db === 'fs') {
-            //listado = await productsList.getProducts();
-            res.render('../src/views/partials/error.hbs', { message: "No es posible trabajar con fs."})
+            res.send({status: "error", message: "fs is no longer available."})
         } else {
             let listado = await prodsMongo.getAll(validLimit,validPage,sort,category);
             let hasPrevPage = listado.value.hasPrevPage;
             let hasNextPage = listado.value.hasNextPage;
             let prevPage = listado.value.prevPage;
             let nextPage = listado.value.nextPage;
-            //console.log(listado.value.docs.length)
             if (listado.value.docs.length>0){
-                //console.log("page: " + page);
-                res.render('../src/views/main.hbs', { prods: listado.value.docs, productsExists: true, realTime: false, hasPrevPage, hasNextPage, prevPage, nextPage, validPage, validLimit, sort, category })
+                res.send({status: 'success', message: "Products list ok", prods: listado.value.docs, productsExists: true, realTime: false, hasPrevPage, hasNextPage, prevPage, nextPage, validPage, validLimit, sort, category })
             } else {
-                res.render('../src/views/main.hbs', { prods: listado.value, productsExists: false, realTime: false })
+                res.send({status: 'success', message: "No products added.", prods: listado.value, productsExists: false, realTime: false })
             }
         }
     } catch (error) {
-        res.render('../src/views/partials/error.hbs', { message: "getProducts Controller error: " + error})
+        res.send({status:'error', message: "getProducts Controller error: " + error})
     }
 }
 
@@ -42,44 +39,15 @@ export const getProductById = async (req, res) => {
     try {
         let product;
         if (db === 'fs') {
-            product = await productsList.getProductById(req.params.pid);
+            res.send({status: "error", message: "fs is no longer available."})
         }else {
             product = await prodsMongo.getById(req.params.pid);
         }
-        if (!product) {
-            /* console.log(`El producto con id ${req.params.pid} no existe.`); */
-            res.render('../src/views/partials/error.hbs', { message: product.message})
-        } else {
-            res.render('../src/views/partials/lookForId.hbs', { prod: product.value, productsExists: true })
-        }
+        res.send({ status: product.status, message: product.message, prod: product.value })
     } catch (error) {
-        res.render('../src/views/partials/error.hbs', { message: "getProductById Controller error: " + error})
+        res.send({status:'error', message: "getProductById Controller error: " + error})
     }
 }
-
-export const updateProductByIdForm = async (req, res) => {
-    try {
-        let id = req.params.id;
-        if (isNaN(id)){
-            res.render('../src/views/partials/error.hbs', { message: "El parámetro no es un número."})    
-        } else {
-            let prod;
-            if (db === 'fs') {
-                prod = await productsList.getProductById(id);
-            } else {
-                prod = await prodsMongo.getById(id);
-            }
-            if (!prod) {
-                res.render('../src/views/partials/error.hbs', { message: "Producto no encontrado."})
-            } else {
-                res.render('../src/views/partials/updateProduct.hbs', { prod: prod.value })
-            }
-        }
-
-    } catch (error) {
-        res.render('../src/views/partials/error.hbs', { message: "updateProductByIdForm Controller error: " + error})
-    }
- }
 
 export const updateProductById = async (req, res) => {
     try {
@@ -96,53 +64,47 @@ export const updateProductById = async (req, res) => {
             category: category
         }
         if (isNaN(id)){
-            res.render('../src/views/partials/error.hbs', { message: "El parámetro no es un número."})        
+            res.send({status: 'error', message: "The ID must be a number."})        
         } else {
             if (db==='fs') {
-                await productsList.updateProductById(id, newProd);
+                res.send({status: "error", message: "fs is no longer available."})
             } else {
                 await prodsMongo.updateById(newProd)
             }
-            res.redirect('/api/products');
-            /* res.send("Producto " + newProd.id + " actualizado. ") */
+            res.send({status:"success", message: `Product ${newProd.id} updated.`})
         }
         
     } catch (error) {
-        /* console.log("Error en updateProductById: " + error); */
-        res.render('../src/views/partials/error.hbs', { message: "updateProductById Controller error: " + error})        
+        res.send({status:'error', message: "updateProductById Controller error: " + error})        
     }
 }
 
 export const deleteProductById = async(req,res)=> {
     try {
         let id = parseInt(req.params.id);
+        let deleteProduct;
         if (!isNaN(id)) {
             if (db==='fs') {
-                await productsList.deleteById(id);
+                res.send({status: "error", message: "fs is no longer available."})
             } else {
-                await prodsMongo.deleteById(id);
+                deleteProduct = await prodsMongo.deleteById(id);
             }
-            res.redirect('/api/products');
+            res.send({status: deleteProduct.status, message: deleteProduct.message})
         } else {
-            /* res.status(400).send({ error: 'El parámetro no es un número.'})  */
-            res.render('../src/views/partials/error.hbs', { message: "El parámetro no es un número."})
+            res.status(400).send({ status: 'error', message: 'El parámetro no es un número.'}) 
         }
     } catch (error) {
-        /* console.log("Error en deleProductById: " + error) */
-        res.render('../src/views/partials/error.hbs', { message: "deleteProductById Controller error: " + error})
+        res.status(400).send({ status: 'error', message: "deleteProductById Controller error: " + error}) 
     }
 }
 
-
-export const aggregateByCategory = async(req,res)=> {
+/* export const aggregateByCategory = async(req,res)=> {
     try {
         let category = "Categoria 1";
         let sort=1;
-        //let limit=undefined;
         let answer = await prodsMongo.aggregateByCategory(category,sort)
-        //console.log(answer);
-        res.render('../src/views/main.hbs', { prods: answer, productsExists: true, realTime: false })
+       // res.render('../src/views/main.hbs', { prods: answer, productsExists: true, realTime: false })
     } catch (error) {
         console.log(error)
     }
-}
+} */

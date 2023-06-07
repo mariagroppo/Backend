@@ -4,6 +4,7 @@ import routerRealTime from './src/routes/realTime.js';
 import routerChat from './src/routes/chat.js';
 import routerCarts from './src/routes/carts.js';
 import routerPersonal from './src/routes/personal.js';
+import routerViews from './src/routes/views.js';
 import __dirname from './utils.js';
 
 const app=express();
@@ -16,6 +17,7 @@ app.use('/api/realtimeproducts', routerRealTime);
 app.use('/api/carts', routerCarts);
 app.use('/api/chat', routerChat)
 app.use('/api/personal', routerPersonal)
+app.use('/views', routerViews)
 
 /* CONFIGURACION DE HANDLEBARS ------------------------------------------------------------------ */
 import { engine } from 'express-handlebars';

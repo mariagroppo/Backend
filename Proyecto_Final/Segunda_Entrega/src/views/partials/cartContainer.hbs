@@ -9,7 +9,7 @@
 
     <div class="container-fluid fontColor">
         {{#if pExist}}
-            <form class="" action="/api/carts/updateCart/{{cart.idCart}}" method="post">
+            <form class="" action="/views/carts/update/{{cart.idCart}}" method="post">
                 <table class="table">
                     <thead class="">
                         <tr class="text-center fontColor">
@@ -53,7 +53,7 @@
                                 </td>
                                 <td class="col1">
                                     <div>
-                                        <form class="container" action="/api/carts/deleteProduct/{{this.id}}" method="post">
+                                        <form class="container" action="/views/carts/delete/{{../cart.idCart}}/product/{{this.id}}" method="post">
                                             <input type="hidden" name="idCart" value={{../cart.idCart}}>
                                             <button type="submit" class="btn btn-danger m-2 col">X</button>
                                         </form>

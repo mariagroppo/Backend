@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 
-const cartsSchema = new mongoose.Schema({
+/* const cartsSchema = new mongoose.Schema({
     idCart:{ type: Number, required: true, index: true },
     timestamp: { type: String, required: true },
-    products: { type: Array }
-});
+    products: { type: Array },
+    cartStatus: { type: Boolean }
+}); */
 
-/* const cartsSchema = new mongoose.Schema({
+const cartsSchema = new mongoose.Schema({
     idCart:{ type: Number, required: true, index: true },
     timestamp: { type: String, required: true },
     products: { 
@@ -16,11 +17,13 @@ const cartsSchema = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId,
                     ref:'productscollection'
                 },
-                quantity: {type: Number}
+                quantity: {type: Number},
+                id: {type: Number}
             }
         ],
-        default:[]
-    }
-}); */
+        default:[],
+    },
+    cartStatus: { type: Boolean, default: true }
+});
 
 export const Cart = mongoose.model("cartscollection", cartsSchema )

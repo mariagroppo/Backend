@@ -2,23 +2,22 @@ import express from 'express';
 
 import { getProducts,
         getProductById,
-        updateProductByIdForm,
+        //updateProductByIdForm,
         updateProductById,
         deleteProductById
  } from '../controllers/controllers.js';
 const router = express.Router();
 
-/* GET Vista de todos los productos -------------------------------- */
+/* Devuelve todos los productos -------------------------------- */
 router.get('/', getProducts);
 
-/* devuelve un producto segùn su id */
+/* Devuelve un producto segùn su id ----------------------------*/
 router.get('/:pid', getProductById)
 
-/* Actualiza un producto segùn su id */
-router.get('/update/:id', updateProductByIdForm)
-router.post('/update/:id', updateProductById)
+/* Actualiza un producto segùn su id --------------------------*/
+router.put('/:id', updateProductById)
 
 /* Borra producto segun su id */
-router.post('/delete/:id', deleteProductById)
+router.delete('/:id', deleteProductById)
 
 export default router;

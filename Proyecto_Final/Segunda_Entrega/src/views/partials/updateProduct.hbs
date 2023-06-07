@@ -3,7 +3,7 @@
             
             <div class="col border border-dark mx-1 fontColor">
                 <h4 class="my-2 fw-bold text-center">Actualice datos del producto</h4>
-                <form class="m-1" action="/api/products/update/{{prod.id}}" method="post" id="formNewProduct">
+                <form class="m-1" action="/views/products/update/{{prod.id}}" method="post" id="formNewProduct">
                     <div class="mb-3">
                         <label for="title" class="form-label">Nombre del producto</label>
                         <input type="text" class="form-control" name="title" id="title" value={{prod.title}}>
