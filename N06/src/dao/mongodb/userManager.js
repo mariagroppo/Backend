@@ -19,7 +19,7 @@ class UserManager {
     try {
         const verification = await this.verifyMail(user.userEmail);
         if (!verification) {
-            return { status: 'success', message: "User created ok.", value: UserModel.create(user)}
+            return { status: 'success', message: "User created ok.", value: await UserModel.create(user)}
         }
         return { status: 'error', message: "User not created. Email already exists.", value: null}
     } catch (error) {

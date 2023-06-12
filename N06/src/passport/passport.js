@@ -95,10 +95,11 @@ const initializePassport = () => {
                 }
                 //al no poner pwd, conviene enviar un correo y pedirle que reestablezca la misma.
                 const result = (await users.createUser(newUser)).value;
-                //console.log(result)
                 done(null, result);
+            } else {
+                user.id = user._id;
+                done(null, user);
             }
-            done(null, user);
         } catch (error) {
             done(error)
         }

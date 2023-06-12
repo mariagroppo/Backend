@@ -58,7 +58,7 @@ export const logout = async (req, res) => {
 
 export const githubCallback = async (req, res) => {
     try {
-        console.log(req.user)
+        //console.log(req.user)
         const user = req.user;
         req.session.user = {
             name: user.first_name,
