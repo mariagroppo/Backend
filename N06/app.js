@@ -3,6 +3,8 @@ import router from './src/routes/products.js';
 import routerRealTime from './src/routes/realTime.js';
 import routerChat from './src/routes/chat.js';
 import routerCarts from './src/routes/carts.js';
+import routerSignin from './src/routes/signin.js';
+import routerlogin from './src/routes/login.js';
 import routerlogout from './src/routes/logout.js';
 import routerRestore from './src/routes/restore.js';
 /* import routerPersonal from './src/routes/personal.js'; */
@@ -72,8 +74,6 @@ connection();
 /* SOCKETS ----------------------------------------------------------------------------------------- */
 import { Server } from 'socket.io';
 import socketProducts from './src/sockets/sockets.js';
-import routerSignin from './src/routes/signin.js';
-import routerlogin from './src/routes/login.js';
 
 const server = app.listen(PORT, () => {
     console.log(`Servidor http escuchando en el puerto ${server.address().port} usando express`);
