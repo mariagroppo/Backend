@@ -1,0 +1,40 @@
+    <div class="container-fluid tipografia">
+        <div class="row">
+            
+            <div class="col border border-dark mx-1 filaDeTabla">
+                <h4 class="my-2 fw-bold text-center textColor">Ingrese un producto nuevo</h4>
+                <form class="m-1" action="/products/add" method="post" id="formNewProduct">
+                    <div class="mb-3">
+                        <label for="title" class="form-label textColor">Nombre del producto</label>
+                        <input type="text" class="form-control" name="title" id="title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="title" class="form-label textColor">Descripción</label>
+                        <input type="text" class="form-control" name="description" id="description">
+                    </div>
+                    <div class="mb-3">
+                        <label for="title" class="form-label textColor">Código</label>
+                        <input type="text" class="form-control" name="code" id="code">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ruta" class="form-label textColor">URL Imagen</label>
+                        <input type="text" class="form-control" name="thumbnail" id="thumbnail">
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label textColor">Precio</label>
+                        <input type="number" class="form-control" name="price" id="price">
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label textColor">Stock</label>
+                        <input type="number" class="form-control" name="stock" id="stock">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label textColor">Categoria</label>
+                        <input type="text" class="form-control" name="category" id="category">
+                    </div>
+                    <button type="submit" class="btn btn-warning my-2">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
