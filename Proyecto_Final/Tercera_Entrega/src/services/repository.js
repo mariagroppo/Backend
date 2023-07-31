@@ -8,8 +8,8 @@ import CartRepository from "./cart.repository.js";
 import ProductRepository from "./products.repository.js";
 import TicketRepostory from "./tickets.repository.js";
 
-//let a = PersistenceFactory.getPersistence();
-export const userService = new UserRepository(PersistenceFactory.getPersistence())
-export const productService = new ProductRepository(PersistenceFactory.getPersistence());
-export const cartService = new CartRepository(PersistenceFactory.getPersistence());
-export const ticketsService = new TicketRepostory(PersistenceFactory.getPersistence());
+let { usersDAO, productsDAO, cartsDAO, ticketsDAO } = await PersistenceFactory.getPersistence();
+export const userService = new UserRepository(usersDAO)
+export const productService = new ProductRepository(productsDAO);
+export const cartService = new CartRepository(cartsDAO);
+export const ticketsService = new TicketRepostory(ticketsDAO);

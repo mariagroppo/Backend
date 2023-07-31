@@ -37,10 +37,6 @@ export default class BaseRouter {
             if ((policies[0].toUpperCase() === 'PUBLIC')) return next();
             if (!user) return res.redirect('/login');
             if ((policies[0].toUpperCase() === 'USER') && (user.role.toUpperCase() === 'USER')) return next()
-
-            //if ((policies[0].toUpperCase() === 'ADMIN') && user?.role.toUpperCase() === 'ADMIN') return next();
-            //if (!policies.includes(user.role.toUpperCase())) return res.status(403).send({status:'error', error:"Forbidden."})
-            
             req.user = user;
             next();
         }
@@ -48,20 +44,21 @@ export default class BaseRouter {
 
     // HOMOLOGACIÓN DE RESPUESTAS
     generateCustomResponses = (req, res, next)=> {
-        res.sendSuccess = message => res.send({status:'success', message});
+        res.sendSuccess = (message, value) =>
+            res.status(200).json({
+            success: 'success',
+            message,
+            value
+        });
+        res.sendError = (status, message, value) =>
+            res.status(status).json({
+            success: 'error',
+            message,
+            value
+        });
+        res.sendSuccessMessage = message => res.send({status:'success', message});
         res.sendError = message => res.send({status:'error', message});
-        res.RenderInternalError = message => res.render('../src/views/partials/error.hbs', 
-            { message: message, userStatus: false})
-        res.sendNotFound = message => res.status(404).send({status:'error', message})
-        
-        
-        
-        res.sendSuccessWithPayload = payload => res.send({status:'success', payload})
-        //res.sendInternalError = error => res.status(500).send({status:'error', error})
-        res.sendUnauthorized = error => res.status(400).send({status:'error', error})
-
-        /* res.sendInternalError = (error, message, status) => res.render('../src/views/partials/error.hbs', 
-            { message: message + ": " + error , userStatus: status}) */
+        res.RenderInternalError = (message, userStatus) => res.render('../src/views/partials/error.hbs', { message: message, userStatus: userStatus})
         next();
     }
 

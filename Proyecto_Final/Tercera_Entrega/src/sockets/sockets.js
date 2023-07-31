@@ -4,7 +4,7 @@ let listOfProducts = new ProductManager('./src/productos.txt');
 import MessageMongoDB from "../dao/mongodb/managers/chatMongoDB.js";
 const chatMongo = new MessageMongoDB();
 
-import { prodsMongo } from '../controllers/controllers.js';
+//import { prodsMongo } from '../controllers/product-controllers.js';
 import db from '../dao/database.js';
 
 export default function socketProducts(socketServer){

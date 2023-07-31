@@ -1,130 +1,11 @@
-import { prodsMongo } from "./controllers.js";
-import { cartsMongo } from "./controllersCarts.js";
-import TicketMongoDB from "../dao/mongodb/managers/ticketsMger.js";
-export const ticketsMongo = new TicketMongoDB();
-import { users } from "./session.js";
-import { createHash, validatePassword } from "../../utils.js";
+
+//import { cartsMongo } from "./carts-controllers.js";
+/* import TicketMongoDB from "../dao/mongodb/managers/ticketsMger.js";
+export const ticketsMongo = new TicketMongoDB(); */
+//import { users } from "./user-others-controllers.js";
+/* import { createHash, validatePassword } from "../../utils.js";
 import { validateLimit, validatePage } from '../../utils.js';
-import { mailProducts } from "../mail/nodemailer.js";
-
-/* REGISTER -------------------------------------------------------- */
-const registerForm = async (req, res) => {
-    try {
-        res.render('../src/views/partials/session-register.hbs', { userStatus: false})
-    } catch (error) {
-        res.sendInternalError('registerForm controller error.')
-    } 
-}
-
-const register = async (req, res) => {
-    try {
-        res.redirect('/login')
-    } catch (error) {
-        res.sendInternalError('register controller error.')
-    }
-}
-
-const registerFailed = async (req, res) => {
-    //console.log(req.session.messages)
-    let c = req.session.messages.length;
-    res.sendInternalError(req.session.messages[c-1])
-}
-
-/* LOGIN -------------------------------------------------------------- */
-const loginForm = async (req, res) => {
-    try {
-        res.render('../src/views/partials/session-login.hbs', { userStatus: false})
-    } catch (error) {
-        res.sendInternalError('getLoginForm controller error.')
-    }
-}
-
-const login = async (req, res) => {
-    try {
-        //console.log(req.session.user)
-        req.session.user = {
-            name: req.user.name,
-            role: req.user.role,
-            id: req.user.id,
-            email: req.user.email
-        }
-        res.redirect('/',)
-    } catch (error) {
-        res.sendInternalError('login controller error.')
-    }
-}
-
-const loginFailed = async (req, res) => {
-    //Si quiero bloquear la cantidad de intentos pongo un filtro por la longitud del array que me vuelve
-    // en req.sesson.messages
-    let c = req.session.messages.length;
-    //res.sendInternalError(error, req.session.messages[c-1], false)
-    res.sendInternalError(req.session.messages[c-1])
-}
-
-const githubCallback = async (req, res) => {
-    try {
-        const user = req.user;
-        req.session.user = {
-            name: user.first_name,
-            email: user.userEmail,
-            role: req.user.role
-        }
-        //console.log("logueado con github")
-        res.redirect('/products')
-    } catch (error) {
-        res.sendInternalError("githubCallback error")
-    }
-}
-
-const logout = async (req, res) => {
-    try {
-        let userStatus=false;
-        if (req.session) {
-            req.session.destroy();
-        }
-        res.render('../src/views/main.hbs', {userStatus});
-    } catch (error) {
-        res.sendInternalError("Logout controller error.")
-        //res.render('../src/views/partials/error.hbs', { message: "logout session error: " + error , userStatus: false})
-    }
-}
-
-
-const restorePasswordForm = async (req, res) => {
-    try {
-        res.render('../src/views/partials/session-restorePwd.hbs')
-    } catch (error) {
-        res.sendInternalError("restorePasswordForm controller error")
-        //res.render('../src/views/partials/error.hbs', { message: "restorePasswordForm controller error: " + error })
-    }
-}
-
-const restorePassword = async (req, res) => {
-    try {
-        let { userEmail, newPassword } = req.body;
-        //1° Verifico si el correo esta registrado.
-        const user = (await users.getUserByEmail(userEmail)).value;
-        if (!user) {
-            res.status(400).render('../src/views/partials/error.hbs', { message: "Email not registered."})
-        } else {
-            //2° Verifico que no esté cambiando por una contraseña igual a la almacenada.
-            const isSamePassword = await validatePassword(newPassword, user.hashedPassword);
-            if(isSamePassword) {
-                res.status(400).render('../src/views/partials/error.hbs', { message: "Cannot replace password. Please define a different one."})
-            } else {
-                const newHashedPassword = await createHash(newPassword);
-                let a = await users.updateUserPassword(userEmail, newHashedPassword);
-                res.status(400).render('../src/views/partials/error.hbs', { message: a.message})
-            }
-
-        }
-    } catch (error) {
-        res.sendInternalError("restorePassword controller error")
-        //res.render('../src/views/partials/error.hbs', { message: "restorePassword controller error: " + error })
-    }
-}
-
+import { mailProducts } from "../mail/nodemailer.js"; */
 
 /* PRODUCTS ---------------------------------------------------------- */
 const viewProducts = async (req, res) => {
@@ -470,17 +351,7 @@ const faker = async (req, res) => {
 }
 
 export default {
-    registerForm,
-    register,
-    registerFailed,
-    loginForm,
-    login,
     viewProducts,
-    loginFailed,
-    githubCallback,
-    logout,
-    restorePasswordForm,
-    restorePassword,
     addProductForm,
     addProduct,
     productById,

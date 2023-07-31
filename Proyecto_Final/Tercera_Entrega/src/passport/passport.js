@@ -11,17 +11,18 @@ done es un callback que se usa para devolverle una rta al cliente
  */
 
 import { createHash } from '../../utils.js';
-//import { users } from '../controllers/session.js';
 import { userService } from '../services/repository.js';
+import config from '../config/config.js';
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
+
 
 const initializePassport = () => {
     passport.use('register', new LocalStrategy({usernameField: 'userEmail', passwordField: 'inputPassword', passReqToCallback:true}, async (req, userEmail, inputPassword, done) => {
         try {
             const {first_name, last_name} = req.body;
             const hashedPassword = await createHash(inputPassword);
-            if (userEmail !== "adminCoder@coder.com"){
+            if (userEmail !== config.mailing.ADMIN_MAIL){
                 const user = {
                     first_name,
                     last_name,
@@ -33,7 +34,7 @@ const initializePassport = () => {
                     done(null,result.value);
                 } else {
                     //done lo que quiere hacer es devolver un req.user. Al poner false, es porque no hay.
-                    done(null,false,{message: result.status})
+                    done(null,false,{message: result.message})
                 }
             } else {
                 done(null,false,{message: 'Email not allowed.'})
@@ -47,7 +48,7 @@ const initializePassport = () => {
     passport.use('login', new LocalStrategy({usernameField: 'userEmail', passwordField: 'inputPassword', passReqToCallback: true}, async (req, userEmail, inputPassword, done) => {
         try {
             let user;
-            if (userEmail === "admin@admin.com " && inputPassword === "123456") {
+            if (userEmail === config.mailing.ADMIN_MAIL && inputPassword === config.mailing.ADMIN_PWD) {
                 user = {
                     id: 123,
                     name: "admin",
@@ -57,7 +58,7 @@ const initializePassport = () => {
                 //res.redirect('/api/products');
                 done(null, user);
             } else { 
-                const userLogin = await users.checkPassword(userEmail, inputPassword);
+                const userLogin = await userService.checkPassword(userEmail, inputPassword);
                 //console.log(userLogin);
                 if (userLogin.status === "success") {
                     user = {
@@ -90,7 +91,7 @@ const initializePassport = () => {
             //Tomo los datos que me sirven: name, email.
             //console.log("adentr de estrategia github")
             const {name, email, id } = profile._json;
-            const user = (await users.getUserByEmail(email)).value;
+            const user = (await userService.getUserByEmail(email)).value;
             let newUser;
             if (!user) {
                 //Creo el usuario.
@@ -101,7 +102,7 @@ const initializePassport = () => {
                     hashedPassword:''
                 }
                 //al no poner pwd, conviene enviar un correo y pedirle que reestablezca la misma.
-                const result = (await users.createUser(newUser)).value;
+                const result = (await userService.createUser(newUser)).value;
                 done(null, result);
             } else {
                 user.id = user._id;

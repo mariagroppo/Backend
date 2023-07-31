@@ -13,5 +13,7 @@ export default {
     mailing: {
         APP_PWD: process.env.APP_PWD,
         APP_MAIL: process.env.APP_MAIL,
+        ADMIN_MAIL: process.env.ADMIN_MAIL,
+        ADMIN_PWD: process.env.ADMIN_PWD
     }
 }

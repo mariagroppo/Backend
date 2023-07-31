@@ -4,6 +4,10 @@ export default class UserRepository {
         this.dao = dao;
     }
 
+    listUsers = async () => {
+        return this.dao.listUsers();
+    }
+
     verifyMail = async (email) =>{
         return this.dao.verifyMail(email);
     }
@@ -11,7 +15,6 @@ export default class UserRepository {
     checkPassword = async (email, password) =>{
         return this.dao.checkPassword(email, password);
     }
-
     createUser = async (user) =>{
         return this.dao.createUser(user);
     }

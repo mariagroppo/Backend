@@ -1,5 +1,5 @@
 import { Cart } from "../models/cartModel.js";
-import { prodsMongo } from "../../../controllers/controllers.js";
+//import { productService } from "../../../services/repository.js";
 
 class CartsMongoDB {
     /* Devuelve el array con los objetos presentes en el archivo ---------------------------------------- */
@@ -146,8 +146,8 @@ class CartsMongoDB {
                 idCart = cart.value[cart.value.length-1].idCart;
                 if (idCart === cid) {
                     /* 2. verifico que el id del producto exista */
-                    let product = await prodsMongo.getById(id);
-                    if (product.value) {
+                    //let product = await productService.getById(id);
+                    //if (product.value) {
                         /* 3. Verifio si el producto esta cargado en el carrito */
                         const charged = await this.verifyProductIsCharged(idCart, id);
                         if (charged.status === 'success') {
@@ -185,9 +185,7 @@ class CartsMongoDB {
                         } else {
                             return { status: charged.status, message: charged.message}
                         }
-                    } else {
-                        return { status: product.status, message: product.message}
-                    }
+                    
 
                 } else {
                     return { status: 'error', message: `The cart ID ${cid} does not matches with the opened cart ID.`}
@@ -208,8 +206,8 @@ class CartsMongoDB {
                 idCart = cart.value[cart.value.length-1].idCart;
                 if (idCart === cid) {
                     /* verificar que el producto id este */
-                    let prod = await prodsMongo.getById(id);
-                    if (prod.status === "success") {
+                    //let prod = await productService.getById(id);
+                    //if (prod.status === "success") {
                         await Cart.findOneAndUpdate(
                             {idCart: idCart},
                             {$set: {"products.$[el].quantity": qty } },
@@ -219,8 +217,8 @@ class CartsMongoDB {
                             }
                           )
                         return { status: 'success', message: `Product ID ${id} updated.`}
-                    }
-                    return { status: 'error', message: `Product ID ${id} not founded in cart ID ${cid}.`}
+                    
+                    
                 }else {
                     return { status: 'error', message: `The cart ID ${cid} does not matches with the opened cart ID.`}
                 }

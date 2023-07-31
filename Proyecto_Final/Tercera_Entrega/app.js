@@ -1,10 +1,10 @@
 import express from 'express';
-import ViewsRouter from './src/routes/views.js';
-//import ProductsRouter() from '';
-//import CartsRouter() from '';
-//import SessionRouter() from '';
-//import ChatRouter() from '';
+import ViewsRouter from './src/routes/views-router.js';
 import RegisterRouter from './src/routes/user-register-router.js';
+import LoginRouter from './src/routes/user-login-router.js';
+import OthersSessionRouter from './src/routes/user-others-router.js';
+import ProductsRouter from './src/routes/products-router.js';
+import CartsRouter from './src/routes/carts-router.js';
 import __dirname from './utils.js';
 import passport from 'passport';
 import initializePassport from './src/passport/passport.js';
@@ -21,7 +21,7 @@ app.use(express.static(__dirname + '/src/public'));
 app.use(session({
     store: new MongoStore({
         mongoUrl: config.mongo.URL,
-        ttl: 120,
+        ttl: 1200,
         collectionName: 'sessions'
     }),
     secret: config.app.SECRET,
@@ -32,20 +32,20 @@ app.use(session({
 app.use(passport.initialize());
 initializePassport();
 
-//const sessionRouter = new SessionRouter();
 const viewsRouter = new ViewsRouter();
-//const productsRouter = new ProductsRouter();
-//const cartsRouter = new CartsRouter();
-//const chatRouter = new ChatRouter();
 const registerRouter = new RegisterRouter();
+const loginRouter = new LoginRouter();
+const otherSessionRouter = new OthersSessionRouter();
+const productsRouter = new ProductsRouter();
+const cartsRouter = new CartsRouter();
 
-app.use('/api/register', registerRouter.getRouter())
-/* app.use('/api/login', routerlogin)
-app.use('/api/restorePassword', routerRestore) */
-//app.use('/api/products', productsRouter.getRouter());
-//app.use('/api/carts', cartsRouter.getRouter());
+app.use('/api/register', registerRouter.getRouter());
+app.use('/api/login', loginRouter.getRouter());
+app.use('/api/others', otherSessionRouter.getRouter());
+app.use('/api/products', productsRouter.getRouter());
+app.use('/api/carts', cartsRouter.getRouter());
+
 //app.use('/api/chat', chatRouter.getRouter());
-//app.use('/api/logout', routerlogout)
 app.use('/', viewsRouter.getRouter());
 
 
