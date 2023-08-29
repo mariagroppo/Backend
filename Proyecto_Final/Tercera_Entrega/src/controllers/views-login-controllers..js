@@ -1,23 +1,16 @@
 const loginForm = async (req, res) => {
     try {
-        res.render('../src/views/partials/session-login.hbs', { userStatus: false})
+        res.status(200).render('../src/views/partials/session-login.hbs', { userStatus: false})
     } catch (error) {
-        res.RenderInternalError('getLoginForm controller error.', false)
+        res.renderInternalError('getLoginForm controller error.', false)
     }
 }
 
 const login = async (req, res) => {
     try {
-        //console.log(req.session.user)
-        req.session.user = {
-            name: req.user.name,
-            role: req.user.role,
-            id: req.user.id,
-            email: req.user.email
-        }
-        res.redirect('/',)
+        res.status(200).redirect('/products',)
     } catch (error) {
-        res.RenderInternalError('login controller error.', false)
+        res.renderInternalError('login controller error.', false)
     }
 }
 
@@ -26,7 +19,7 @@ const loginFailed = async (req, res) => {
     // en req.sesson.messages
     let c = req.session.messages.length;
     //res.sendInternalError(error, req.session.messages[c-1], false)
-    res.RenderInternalError(req.session.messages[c-1], false)
+    res.renderInternalError(req.session.messages[c-1], false)
 }
 
 const githubCallback = async (req, res) => {

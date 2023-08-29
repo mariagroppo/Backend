@@ -3,7 +3,7 @@
             
             <div class="col border border-dark mx-1 fontColor">
                 <h4 class="my-2 fw-bold text-center">Actualice datos del producto</h4>
-                <form class="m-1" action="/products/update/{{prod.id}}" method="post" id="formNewProduct">
+                <form class="m-1" action="/products/mine/update/{{prod.id}}" method="post" id="formNewProduct">
                     {{!-- <label for="">{{prod.title}}</label> --}}
                     <div class="mb-3">
                         <label for="title" class="form-label">Nombre del producto</label>
@@ -29,9 +29,17 @@
                         <label for="price" class="form-label">Stock</label>
                         <input type="number" class="form-control" name="stock" id="stock" value={{prod.stock}}>
                     </div>
-                    <div class="mb-3">
+
+                    <div class="form-floating">
+                        <select name="category" id="category" class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected>{{prod.category}}</option>
+                            <option value="1">Categoria 1</option>
+                            <option value="2">Categoria 2</option>
+                            <option value="3">Categoria 3</option>
+                            <option value="3">Categoria 4</option>
+                        </select>
                         <label for="category" class="form-label">Categoria</label>
-                        <input type="text" class="form-control" name="category" id="category" value={{prod.category}}>
+
                     </div>
                     <button type="submit" class="btn btn-warning my-2">Enviar</button>
                 </form>

@@ -22,7 +22,7 @@
                         </td>
                         <td>
                             {{#each this.products}}
-                                {{this.quantity}}x ID: {{this.id}} <br>
+                                {{this.quantity}} x ID: {{this._id.id}} <br>
                             {{/each}}
                         </td>
                         <td>
@@ -55,8 +55,8 @@
             </table>
         </div>
     {{else}}
-        <div class="container-fluid">
-            <h4 class="alert alert-danger">No se encontraron carritos</h4>
+        <div class="container-fluid mt-3">
+            <h4 class="alert alert-danger">Usted no posee un historial de carritos.</h4>
         </div>
     {{/if}}
 </div>

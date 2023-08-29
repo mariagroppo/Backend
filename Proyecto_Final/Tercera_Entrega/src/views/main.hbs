@@ -4,12 +4,13 @@
             <h4 class="p-3 fw-bold textColor">Lista de productos</h4>
         </div>
 
+        {{#if enabled}}  
         <div class="col-2">
-            <form class="container" action="/products/add" method="get">
+            <form class="container" action="/products/mine/add" method="get">
                 <button type="submit" class="btn col btn-primary m-2">Agregar producto</button>
             </form>
         </div>
-
+        {{else}}
         <div class="bigContainer">
             <div class="fiterContainer mb-3">
                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
@@ -37,6 +38,9 @@
             
         </div>
 
+        {{/if}}
+
+
         {{#if productsExists}}
             <div class="d-flex flex-wrap justify-content-around">
                 {{#each prods}}
@@ -48,19 +52,24 @@
                                 <div class="col align-self-center">
                                     <h5 class="card-title">{{this.title}}</h5>
                                 </div>
+                                {{#if ../enabled}}
                                 <div class="col-2">
-                                    <form class="container" action="/products/delete/{{this.id}}" method="post">
+                                    <form class="container" action="/products/mine/delete/{{this.id}}" method="post">
                                         <input type="hidden" name="id" value={{this.id}}>
                                         <button type="submit" class="btn col"><img class="deleteIcon" src="https://cdn.icon-icons.com/icons2/692/PNG/512/seo-social-web-network-internet_262_icon-icons.com_61518.png" alt=""></button>
                                     </form>
                                 </div>
                                 <div class="col-2">
-                                    <form class="container" action="/products/update/{{this.id}}" method="get">
+                                    <form class="container" action="/products/mine/update/{{this.id}}" method="get">
                                         <input type="hidden" name="id" value={{this.id}}>
                                         <button type="submit" class="btn col"><img class="deleteIcon" src="https://cdn-icons-png.flaticon.com/128/2546/2546743.png" alt=""></button>
                                     </form>
                                 </div>
+                                {{/if}}
                             </div>
+                            {{#if ../enabled}}
+                            
+                            {{else}}
                             <div class="d-flex mb-3">
                                 <div class="col-6 d-inline">
                                     <button type="button" id="btnRest" name={{this.id}} class="btn col btnRest">-</button>
@@ -80,6 +89,7 @@
                                 
 
                             </div>
+                        {{/if}}
                         </div>
                         <span class="badge stockStyle">STOCK: {{this.stock}}</span>
                         <p class="card-text">{{this.description}}</p>
@@ -99,6 +109,8 @@
             </div>
         {{/if}}
 
+        {{#if enabled}}
+        {{else}}
         <div class="d-flex">
             {{#if hasPrevPage}}
                 <a class="p-2" href="?page={{prevPage}}&&limit={{validLimit}}&&sort={{sort}}&&category={{category}}"><button>Anterior</button></a>
@@ -108,7 +120,7 @@
                 <a class="p-2" href="?page={{nextPage}}&&limit={{validLimit}}&&sort={{sort}}&&category={{category}}"><button>Siguiente</button></a>
             {{/if}}
         </div>
-   
+        {{/if}}
     {{else}}
     <img class="home" src="https://i.gifer.com/33HU.gif" alt="">
 {{!-- https://gifer.com/es/events/GIF-animado-transparente --}}

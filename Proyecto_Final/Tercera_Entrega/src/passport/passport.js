@@ -50,7 +50,7 @@ const initializePassport = () => {
             let user;
             if (userEmail === config.mailing.ADMIN_MAIL && inputPassword === config.mailing.ADMIN_PWD) {
                 user = {
-                    id: 123,
+                    _id: "admin123",
                     name: "admin",
                     email: userEmail,
                     role: 'admin'
@@ -67,7 +67,6 @@ const initializePassport = () => {
                         email: userLogin.value.userEmail,
                         role: userLogin.value.role
                       };
-                    //console.log(user)
                     done(null, user);
                 } else {
                     done(null, false, {message: 'Incorrect Password.'});

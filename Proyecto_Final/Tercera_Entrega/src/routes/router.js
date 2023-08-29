@@ -36,7 +36,9 @@ export default class BaseRouter {
             const user = req.session.user;
             if ((policies[0].toUpperCase() === 'PUBLIC')) return next();
             if (!user) return res.redirect('/login');
-            if ((policies[0].toUpperCase() === 'USER') && (user.role.toUpperCase() === 'USER')) return next()
+            if (user.role.toUpperCase() === 'ADMIN') return next();
+            if ((policies[0].toUpperCase() === 'USER') && (user.role.toUpperCase() === 'USER')) return next();
+            
             req.user = user;
             next();
         }
@@ -44,21 +46,13 @@ export default class BaseRouter {
 
     // HOMOLOGACIÓN DE RESPUESTAS
     generateCustomResponses = (req, res, next)=> {
-        res.sendSuccess = (message, value) =>
-            res.status(200).json({
-            success: 'success',
-            message,
-            value
-        });
-        res.sendError = (status, message, value) =>
-            res.status(status).json({
-            success: 'error',
-            message,
-            value
-        });
-        res.sendSuccessMessage = message => res.send({status:'success', message});
-        res.sendError = message => res.send({status:'error', message});
-        res.RenderInternalError = (message, userStatus) => res.render('../src/views/partials/error.hbs', { message: message, userStatus: userStatus})
+        res.sendErrorMessage = message => res.status(500).send({status:'error', message});
+        res.sendInternalErrorMessage = message => res.status(400).send({status:'error', message});
+        res.sendSuccessMessage = message => res.status(200).send({status:'success', message});
+        res.renderInternalError = (message, userStatus) => res.render('../src/views/partials/error.hbs', {
+            message: message,
+            userStatus: userStatus})
+        
         next();
     }
 

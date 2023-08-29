@@ -17,22 +17,22 @@ export async function mailProducts(cart, user) {
             detallePedido += `
             <tr class="text-center align-middle">
                 <td>
-                    ${element.id}
+                    ${element._id.id}
                 </td>
                 <td>
-                    ${element.title}
+                    ${element._id.title}
                 </td>
                 <td>
-                    ${element.description}
+                    ${element._id.description}
                 </td>
                 <td>
-                    ${element.code}
+                    ${element._id.code}
                 </td>
                 <td>
-                    <img class="rounded mx-auto d-block imagenProducto" src=${element.thumbnail}>
+                    <img class="rounded mx-auto d-block imagenProducto" src=${element._id.thumbnail}>
                 </td>
                 <td>
-                    $ ${element.price}
+                    $ ${element._id.price}
                 </td>
                 <td>
                     ${element.quantity}
@@ -78,7 +78,44 @@ export async function mailProducts(cart, user) {
             html: html
         }
         await transporter.sendMail(mailOptions)
-        console.log("Correos enviados.")
+    } catch (error) {
+       console.log(error)
+    }
+    
+}
+
+export async function mailPwd(userEmail) {
+    try {
+        
+        let html = `
+            <h3>Detalles de compra</h3>
+            <p>Nombre: ${user.name}</p>
+            <table>
+                <thead>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Nombre del producto</th>
+                        <th>Descripción</th>
+                        <th>Código</th>
+                        <th>Imagen</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                ${detallePedido}
+                </tbody>
+            </table>                
+            `
+        let mailTo = userEmail;
+        let subject= 'Restauración de contraseña';
+        let mailOptions = {
+            from: process.env.APP_MAIL,
+            to: mailTo,
+            subject: subject,
+            html: html
+        }
+        await transporter.sendMail(mailOptions);
         
     } catch (error) {
        console.log(error)

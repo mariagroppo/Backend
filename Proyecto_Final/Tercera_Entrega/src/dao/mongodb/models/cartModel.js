@@ -3,20 +3,28 @@ import mongoose from "mongoose";
 const cartsSchema = new mongoose.Schema({
     idCart:{ type: Number, required: true, index: true },
     timestamp: { type: String, required: true },
-    products: { 
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'userscollection'
+    },
+    products: {
         type: [
             {
-                product: {
+                _id: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref:'productscollection'
+                    ref: 'productscollection'
                 },
-                quantity: {type: Number},
-                id: {type: Number}
+                quantity: {
+                    type: Number,
+                    default: 1
+                }
+
             }
         ],
-        default:[],
+        default: []
     },
     cartStatus: { type: Boolean, default: true }
 });
+
 
 export const Cart = mongoose.model("cartscollection", cartsSchema )

@@ -1,25 +1,22 @@
 import { Cart } from "../models/cartModel.js";
+import mongoose from "mongoose";
 //import { productService } from "../../../services/repository.js";
 
 class CartsMongoDB {
     /* Devuelve el array con los objetos presentes en el archivo ---------------------------------------- */
-    getAll = async () => {
+    getAll = async (userId) => {
         try {
-            const contenido = await Cart.find().lean().populate('products.product');
-            let contenido2=contenido;
-            for (let i = 0; i < contenido.length; i++) {
-                contenido2[i]._id = contenido[i]._id.toString();
-            }
-            return { status: 'success', message: "Carts ok.", value: contenido2}
+            const contenido = await Cart.find({user: userId}).lean().populate('products._id');
+            return { status: 'success', message: "Carts ok.", value: contenido}
             
         } catch (error) {
             return { status: 'error', message: "Error en getAll MongoDB: " + error, value: null}
         }
     } 
 
-    getById = async (number) => {
+    getById = async (number,userId) => {
         try {
-            let cart = await Cart.findOne({idCart: Number(number)}).lean().populate('products.product');;
+            let cart = await Cart.findOne({idCart: Number(number), user: userId}).lean().populate('products._id');
             if (!cart) {
                 return { status: 'error', message: `cart ID ${number} do not exists.`, value: null}
             } else {
@@ -36,9 +33,9 @@ class CartsMongoDB {
         
     } 
 
-    asignId = async () => {
+    asignId = async (userId) => {
         try {
-            const list = await this.getAll();
+            const list = await this.getAll(userId);
             let maxId=0;
             if (list.value.length === 0) {
                 maxId=1;
@@ -58,56 +55,50 @@ class CartsMongoDB {
         }
     }
 
-    save = async () => {
+    save = async (userId) => {
         try {
-            const list = await this.getAll();
-            let a = list.value.length;
-            if (a > 0) {
-                let cart = list.value[a-1];
+            const list = await this.getAll(userId);
+            let cartsQuantity = list.value.length;
+            if (cartsQuantity > 0) {
+                let cart = list.value[cartsQuantity-1];
                 if (cart.cartStatus === true) {
-                    return { status: 'error', message: "No se puede crear un nuevo carrito ya que posee uno abierto.", value: null}
-                } else {
-                    const newId = await this.asignId();
-                    const timestamp = Date.now();
-                    const obj = ({
-                        idCart:parseInt(newId),
-                        timestamp: timestamp,
-                        products: [],
-                        cartStatus: true
-                    });
-                    const newCart = new Cart(obj);
-                    await newCart.save();
-                    return { status: 'success', message: `Cart created.`, value: newCart}
-                }
-            } else {
-                const newId = 1;
-                const timestamp = Date.now();
-                const obj = ({
-                    idCart:parseInt(newId),
-                    timestamp: timestamp,
-                    products: [],
-                    cartStatus: true
-                });
-                const newCart = new Cart(obj);
-                await newCart.save();
-                return { status: 'success', message: `Cart created.`, value: newCart}
-            } 
-            
+                    return { status: 'error', 
+                    message: "No se puede crear un nuevo carrito ya que posee uno abierto.",
+                    value: null}
+                } 
+            }
+            const newId = await this.asignId(userId);
+            const timestamp = Date.now();
+            const obj = ({
+                idCart:parseInt(newId),
+                timestamp: timestamp,
+                products: [],
+                cartStatus: true,
+                user: userId
+            });
+            const newCart = new Cart(obj);
+            await newCart.save();
+            return { status: 'success', message: `Cart created.`, value: newCart}
         } catch (error) {
             return { status: 'error', message: error, value: null}
         }
         
     } 
 
-    deleteById = async (id) => {
+    deleteById = async (id,userId) => {
         try {
             if (parseInt(id)>0) {
-                let answer = await this.getById(id);
-                if (answer.status === 'success') {
-                    await Cart.deleteOne({
-                        idCart: id
-                    })
-                    return { status: 'success', message: `Cart ${id} deleted.`, value: true}
+                let cart = await this.getById(id,userId);
+                if (cart.status === 'success') {
+                    if (cart.value.user.toString() === userId) {
+                        await Cart.deleteOne({
+                            idCart: id
+                        })
+                        return { status: 'success', message: `Cart ${id} deleted.`, value: true}
+                    } else {
+                        return { status: 'error', message: `Cart ${id} can not be deleted. It is not yours`, value: false}
+                    }
+                    
                 } else {
                     return { status: 'error', message: `Cart ${id} do not exists.`, value: false}
                 }
@@ -119,80 +110,58 @@ class CartsMongoDB {
         }
     }
 
-    verifyProductIsCharged = async (idCart, id) => {
+    addProductInCart = async (product, quantity, userId) => {
         try {
-            const cart = await this.getById(idCart);
-            if (cart.value.products.length === 0) {
-                return { status: 'success', message: "No products in the cart selected.", value: false}
-            } else {
-                for (let index = 0; index < cart.value.products.length; index++) {
-                    if (parseInt(id) === parseInt(cart.value.products[index].id)) {
-                        return { status: 'success', message: "The product is already selected.", value: true}
+            /* 1. Busco el carrito abierto y si no hay, abro uno*/
+            const carts = await this.getAll(userId);
+            let cart;
+            let createCart;
+            if (carts.value.length > 0) {
+                cart = carts.value[carts.value.length-1];
+                if (cart.cartStatus === false) {
+                    createCart = await this.save(userId);
+                    if (createCart.status === 'success'){
+                        cart = createCart.value
+                    } else {
+                        return { status: 'error', message: "Error while trying to create a new cart: " + error}
                     }
                 }
-                return { status: 'success', message: "Product not selected.", value: false}
-            }
-        } catch (error) {
-            return { status: 'error', message: "verifyProductIsCharged manager error: " + error, value: false}
-        }
-    }
-
-    addProductInCart = async (cid, id, quantity) => {
-        try {
-            /* 1. Busco el carrito abierto */
-            let cart = await this.getAll();
-            let idCart;
-            if ((cart.value?.length > 0) && (cart.value[cart.value.length-1]?.cartStatus===true)) {
-                idCart = cart.value[cart.value.length-1].idCart;
-                if (idCart === cid) {
-                    /* 2. verifico que el id del producto exista */
-                    //let product = await productService.getById(id);
-                    //if (product.value) {
-                        /* 3. Verifio si el producto esta cargado en el carrito */
-                        const charged = await this.verifyProductIsCharged(idCart, id);
-                        if (charged.status === 'success') {
-                            if (charged.value === true) {
-                                for (let index = 0; index < cart.value[cart.value.length-1].products.length; index++) {
-                                    if (parseInt(cart.value[cart.value.length-1].products[index].id) === parseInt(id)) {
-                                        cart.value[cart.value.length-1].products[index].quantity= parseInt(cart.value[cart.value.length-1].products[index].quantity)+parseInt(quantity);
-                                    }
-                                }
-                                await Cart.updateOne({idCart: idCart}, cart.value[cart.value.length-1])
-                            } else {
-                                const product = {
-                                    id: id,
-                                    quantity: quantity
-                                };
-                                let productsList = cart.value[cart.value.length-1].products;
-                                productsList.push(product);
-                                await Cart.updateOne({idCart: idCart}, cart.value[cart.value.length-1])
-                                //console.log("agrego prod nuevo")
-                                
-                                /* await Cart.updateOne(
-                                    {idCart: idCart},
-                                    {
-                                        $push: {
-                                            products:
-                                                {
-                                                    _id: id,
-                                                    quantity: quantity
-                                                }
-                                        }
-                                    }
-                                ) */
-                            }
-                            return { status: charged.status, message: `Product ID ${id} added to cart ID ${idCart}.`}
-                        } else {
-                            return { status: charged.status, message: charged.message}
-                        }
-                    
-
-                } else {
-                    return { status: 'error', message: `The cart ID ${cid} does not matches with the opened cart ID.`}
-                }
             } else {
-                return ({status:'error', message: "You need to open a new cart."})
+                //creo un carrito
+                createCart = await this.save(userId);
+                if (createCart.status === 'success'){
+                    cart = createCart.value
+                } else {
+                    return { status: 'error', message: "Error while trying to create a new cart: " + error}
+                }
             }
+            let cid = cart.idCart;
+            //2. Verifio si el producto esta cargado en el carrito
+            
+            let findProductInCart = false;
+            for (let index = 0; index < cart.products.length; index++) {
+                if (cart.products[index]._id._id.toString() === product._id.toString()) {
+                    findProductInCart = true
+                }
+            }
+            if (findProductInCart) {
+                await Cart.updateOne(
+                    { idCart: cid, "products._id": product._id },
+                    { $inc: { "products.$.quantity": quantity } })
+            
+            } else {
+                await Cart.updateOne(
+                    { idCart: cid },
+                    {
+                        $push: {
+                            products: {
+                                _id: product._id.toString(),
+                                quantity: quantity
+                            }
+                        }
+                    })
+            }
+            return { status: 'success', message: `Product ID ${product.id} added to cart ID ${cid}.`}
         } catch (error) {
             return { status: 'error', message: "addProductInCart manager error: " + error}
         }
@@ -230,18 +199,21 @@ class CartsMongoDB {
         }
     }
     
-    deleteProduct = async (cid, id) => {
+    deleteProduct = async (cid, id, userId) => {
         try {
-            let cart = await this.getAll();
+            let cart = await this.getAll(userId);
             let idCart;
             if ((cart.value.length > 0) && (cart.value[cart.value.length-1].cartStatus===true)) {
                 idCart = cart.value[cart.value.length-1].idCart;
+                console.log("idCart: "+ idCart)
                 if (idCart === cid) {
                     if ((!isNaN(id)) && (id > 0)) {
                         for (let index = 0; index < cart.value[cart.value.length-1].products.length; index++) {
-                            if (cart.value[cart.value.length-1].products[index].id === parseInt(id)) {
+                            console.log(cart.value[cart.value.length-1].products[index]._id.id)
+                            console.log(id)
+                            if (parseInt(cart.value[cart.value.length-1].products[index]._id.id) === parseInt(id)) {
                                 await Cart.updateOne(
-                                    {idCart: idCart},
+                                    {idCart: idCart, user: userId},
                                     {$pull: {products: {id: id}}});
                                 return { status: 'success', message: `Product ID ${id} deleted.`}
                             }
@@ -253,20 +225,19 @@ class CartsMongoDB {
                     return { status: 'error', message: `The cart ID ${cid} does not matches with the opened cart ID.`}
                 }
             } else {
-                return ({status:'error', message: "No cart opened."})
+                return ({status:'error', message: "No carts opened."})
             }
         } catch (error) {
             return { status: 'error', message: "deleteProduct Manager error: " + error}
         }
     }
     
-    updateCartGlobal = async (cid, newData) => {
+    updateCartGlobal = async (cid, newData, userId) => {
         try {
             let b = Object.values(newData)
-            //console.log(b)
-            let cart = await this.getAll();
+            let cart = await this.getAll(userId);
             let idCart;
-            if ((cart.value.  length > 0) && (cart.value[cart.value.length-1].cartStatus===true)) {
+            if ((cart.value.length > 0) && (cart.value[cart.value.length-1].cartStatus===true)) {
                 idCart = cart.value[cart.value.length-1].idCart;
                 if (idCart === cid) {
                     for (let index = 0; index < b.length -1 ; index++) {
@@ -314,10 +285,10 @@ class CartsMongoDB {
         }
     }
 
-    closeCart = async (cid) => {
+    closeCart = async (cid,userId) => {
         try {
             await Cart.updateOne(
-                {idCart: cid},
+                {idCart: cid, user: userId.toString()},
                 {$set: {"cartStatus": false } }
             )
             return { status: 'success', message: "Cart closed."}

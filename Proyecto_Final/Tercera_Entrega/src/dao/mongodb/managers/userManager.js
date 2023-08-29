@@ -63,12 +63,16 @@ class UserManager {
 
     updateUserPassword = async (email, newHashedPassword) => {
         try {
-            await UserModel.updateOne(
+            const answer = await UserModel.updateOne(
                 {userEmail: email},
                 {
                     $set: {hashedPassword: newHashedPassword}
                 })
-            return { status: 'success', message: "User password updated."}
+            if (answer.acknowledged === false) {
+                return { status: 'error', message: "User password NOT updated."}
+            } else {
+                return { status: 'success', message: "User password updated."}
+            }
         } catch (error) {
             return { status: 'error', message: "updateUserPassword Manager error: " + error}
         }

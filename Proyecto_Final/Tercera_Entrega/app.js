@@ -1,8 +1,6 @@
 import express from 'express';
 import ViewsRouter from './src/routes/views-router.js';
-import RegisterRouter from './src/routes/user-register-router.js';
-import LoginRouter from './src/routes/user-login-router.js';
-import OthersSessionRouter from './src/routes/user-others-router.js';
+import SessionRouter from './src/routes/session-router.js';
 import ProductsRouter from './src/routes/products-router.js';
 import CartsRouter from './src/routes/carts-router.js';
 import __dirname from './utils.js';
@@ -11,6 +9,8 @@ import initializePassport from './src/passport/passport.js';
 import config from './src/config/config.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import swaggerJSDoc from 'swagger-jsdoc';
+import SwaggerUiExpress from 'swagger-ui-express';
 
 const app = express();
 const PORT = config.app.PORT;
@@ -21,7 +21,7 @@ app.use(express.static(__dirname + '/src/public'));
 app.use(session({
     store: new MongoStore({
         mongoUrl: config.mongo.URL,
-        ttl: 1200,
+        ttl: 12000,
         collectionName: 'sessions'
     }),
     secret: config.app.SECRET,
@@ -32,21 +32,38 @@ app.use(session({
 app.use(passport.initialize());
 initializePassport();
 
+const swaggerOptions = {
+    definition: {
+        //version de API utilizada para documentar.
+        openapi: '3.0.1',
+        //Info que contiene la API.
+        info: {
+            title: "Ecommerce Coder Backend.",
+            description: "Documentación del Ecommerce Coder Backend."
+        }
+    },
+    //Ingresa a cualquier carpeta y archivo con extensión yaml
+    apis: [`${__dirname}/src/docs/**/*.yaml`]
+}
+
+//Procesamiento de las especificaciones por Swagger
+const specs = swaggerJSDoc(swaggerOptions);
+//Se mete como middleware. Se inicializa con la configuracion de specs
+app.use('/docs',SwaggerUiExpress.serve,SwaggerUiExpress.setup(specs))
+
 const viewsRouter = new ViewsRouter();
-const registerRouter = new RegisterRouter();
-const loginRouter = new LoginRouter();
-const otherSessionRouter = new OthersSessionRouter();
+const sessionRouter = new SessionRouter();
 const productsRouter = new ProductsRouter();
 const cartsRouter = new CartsRouter();
 
-app.use('/api/register', registerRouter.getRouter());
-app.use('/api/login', loginRouter.getRouter());
-app.use('/api/others', otherSessionRouter.getRouter());
+app.use('/api/sessions', sessionRouter.getRouter());
 app.use('/api/products', productsRouter.getRouter());
 app.use('/api/carts', cartsRouter.getRouter());
+app.use('/api/*', sessionRouter.getRouter());
+app.use('/', viewsRouter.getRouter());
+app.use('*', viewsRouter.getRouter())
 
 //app.use('/api/chat', chatRouter.getRouter());
-app.use('/', viewsRouter.getRouter());
 
 
 /* CONFIGURACION DE HANDLEBARS ------------------------------------------------------------------ */
@@ -62,10 +79,6 @@ app.engine('hbs',engine( {
         allowProtoMethodsByDefault: true
       }
 } ));
-
-/* MONGO DATABASE --------------------------------------------------------------------------------------------  */
-/* import { connection } from "./src/dao/mongodb/config.js";
-connection(); */
 
 /* SOCKETS ----------------------------------------------------------------------------------------- */
 import { Server } from 'socket.io';

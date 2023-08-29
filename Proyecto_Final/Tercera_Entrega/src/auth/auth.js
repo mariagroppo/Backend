@@ -5,12 +5,12 @@ export const privacy = (privacyType) => {
             case 'PRIVATE':
             //Deja continuar con el proceso a aquellos que se encuentren logueads.
                 if (user) next();
-                else res.redirect('/login')
+                else res.redirect('/api/sessions/login')
                 break;
             //Si no estás logueado, continuas. Sino, te redirige al home.
             case "NO_AUTHENTICATED":
                 if (!user) next();
-                else res.redirect('/products')
+                else res.redirect('/api/products')
         }
     }
 }

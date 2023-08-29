@@ -28,14 +28,14 @@
                         {{#each cart.products}}  
                             <tr class="text-center align-middle fontColor">
                                 <td class="col1">
-                                    <input type="hidden" name={{this.id}} value={{this.id}}>
-                                    {{this.id}}
+                                    <input type="hidden" name={{this._id.id}} value={{this._id.id}}>
+                                    {{this._id.id}}
                                 </td>
-                                <input type="hidden" class="productQtyInput2" id={{this.id}} value={{this.quantity}}>
+                                <input type="hidden" class="productQtyInput2" id={{this._id.id}} value={{this.quantity}}>
                                 <td class="col1 groupButtons">
-                                    <button type="button" id="btnRest2" name={{this.id}} class="btn col btnRest">-</button>
-                                    <input class="productQtyInput2" name={{this.id}} id={{this.id}} value={{this.quantity}}>
-                                    <button type="button" id="btnSum2" name={{this.id}} class="btn col btnSum">+</button>
+                                    <button type="button" id="btnRest2" name={{this._id.id}} class="btn col btnRest">-</button>
+                                    <input class="productQtyInput2" name={{this._id.id}} id={{this._id.id}} value={{this.quantity}}>
+                                    <button type="button" id="btnSum2" name={{this._id.id}} class="btn col btnSum">+</button>
                                     <span class="">Stock disponible: {{this._id.stock}}</span>
                                 </td>
                                 <td>
@@ -45,17 +45,17 @@
                                     {{this._id.description}}
                                 </td>
                                 <td>
-                                    {{this.code}}
+                                    {{this._id.code}}
                                 </td>
                                 <td>
-                                    <img class="rounded mx-auto d-block imagenProducto" src={{this.thumbnail}}>
+                                    <img class="rounded mx-auto d-block imagenProducto" src={{this._id.thumbnail}}>
                                 </td>
                                 <td class="col1">
-                                    {{this.price}}
+                                    {{this._id.price}}
                                 </td>
                                 <td class="col1">
                                     <div>
-                                        <form class="container" action="/carts/delete/{{../cart.idCart}}/product/{{this.id}}" method="post">
+                                        <form class="container" action="/carts/delete/{{../cart.idCart}}/product/{{this._id.id}}" method="post">
                                             <input type="hidden" name="idCart" value={{../cart.idCart}}>
                                             <button type="submit" class="btn btn-danger m-2 col">X</button>
                                         </form>

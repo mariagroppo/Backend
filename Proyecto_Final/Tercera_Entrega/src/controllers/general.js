@@ -1,15 +1,15 @@
 const pageNotFound = async (req, res) => {
-    res.sendNotFound("Page not found.")
+    res.sendErrorMessage("Page not found. " + req.url);
 }
 
 const views_pageNotFound = async (req, res) => {
     try {
-        res.render('../src/views/partials/session-register.hbs', { userStatus: false})
+        res.render('../src/views/partials/pageNotFound.hbs', { userStatus: false});
     } catch (error) {
         if (req.user) {
-            return res.RenderInternalError('registerForm controller error.', true)
+            return res.renderInternalError('registerForm controller error.', true)
         } else {
-            return res.RenderInternalError('registerForm controller error.', false)
+            return res.renderInternalError('registerForm controller error.', false)
         }
 
     } 

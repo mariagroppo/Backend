@@ -1,9 +1,9 @@
-import { Product } from "../models/productModel.js";
+import Product from "../models/productModel.js";
 import { generateProduct } from "../../../mocks/prods.mocks.js";
 
 class ProductMongoDB {
     /* Devuelve el array con los objetos presentes en el archivo ---------------------------------------- */
-    getAll = async (validLimit,page,sort,category) => {
+    getAll = async (validLimit,page,sort,category,owner,enabled) => {
         try {
             let options = {
                 page: Number(page) || 1,
@@ -12,9 +12,17 @@ class ProductMongoDB {
             };
             let contenido;
             if (category) {
-                contenido = await Product.paginate({category: category},options);
+                if (!enabled) {
+                    contenido = await Product.paginate({category: category,  owner: { $ne: owner }},options);
+                } else {
+                    contenido = await Product.paginate({category: category, owner: owner},options);
+                }
             } else {
-                contenido = await Product.paginate({},options);
+                if (!enabled) {
+                    contenido = await Product.paginate({ owner: { $ne: owner }},options);
+                } else {
+                    contenido = await Product.paginate({owner: owner},options);
+                }
             }
             return { status: 'success', message: "Products ok.", value: contenido}
             
@@ -89,16 +97,33 @@ class ProductMongoDB {
                 const thumbnail=newProduct.thumbnail;
                 const code = newProduct.code;
                 const description = newProduct.description;
-                const category = newProduct.category;
+                let category;
+                switch (parseInt(newProduct.category)) {
+                    case 1:
+                      category = "Categoria 1"
+                      break;
+                    case 2:
+                        category = "Categoria 2"
+                        break;
+                    case 3:
+                        category = "Categoria 3"
+                        break;
+                    case 4:
+                        category = "Categoria 4"
+                        break;
+                    default:
+                        category = "Categoria 4";
+                        break;
+                  }
                 const stock = newProduct.stock;
                 const price=newProduct.price;
-                const prod = {id, title, thumbnail, price, code, category, stock, description};
-    
+                const owner = newProduct.userId;
+                const prod = {id, title, thumbnail, price, code, category, stock, description, owner};
                 const newProd = new Product(prod);
                 await newProd.save();
-                return { status: 'success', message: `Producto cargado.`, value: newProd}
+                return { status: 'success', message: `New product uploaded correctly.`, value: newProd}
             } else {
-                return { status: 'error', message: `${repeatCode.message}`, value: null}
+                return { status: 'error', message: repeatCode.message, value: null}
             }
             
         } catch (error) {
@@ -107,15 +132,19 @@ class ProductMongoDB {
         
     } 
 
-    deleteById = async (id) => {
+    deleteById = async (id,owner) => {
         try {
             if (parseInt(id)>0) {
                 let answer = await this.getById(id);
                 if (answer.status === 'success') {
-                    await Product.deleteOne({
-                        id: id
-                    })
-                    return { status: 'success', message: `Product ${id} deleted.`, value: true}
+                    if ((answer.value.owner.toString() === owner) || (owner === 'admin123')) {
+                        await Product.deleteOne({
+                            id: id
+                        })
+                        return { status: 'success', message: `Product ${id} deleted.`, value: true}
+                    } else {
+                        return { status: 'error', message: `Product ID ${id} is not yours. You can't delete it.`, value: true}
+                    }
                 } else {
                     return { status: 'error', message: `Product ${id} do not exists.`, value: false}
                 }
@@ -125,47 +154,63 @@ class ProductMongoDB {
         } catch (error) {
             return { status: 'error', message: "Error en deleteById MongoDB: " + error, value: false}
         }
-    }
+    }  
 
-    
-
-    updateById = async (prod) => {
+    updateById = async (prod, owner) => {
         let number=prod.id;
         let newObject = await Product.findOne({id: number});
         if (newObject === []) {
-            return { status: 'error', message: `Product ID ${number} do not exists.`, value: false}
+            return { status: 'error', message: `Product ID ${number} do not exists.`}
         } else {
-            if (prod.title !== "" ) {
-                newObject.title=prod.title
-            } 
-            if (prod.thumbnail != "" ) {
-                newObject.thumbnail=prod.thumbnail
+            if ((owner === newObject.owner.toString()) || (owner === 'admin123')) {
+                if (prod.title !== "" ) {
+                    newObject.title=prod.title
+                } 
+                if (prod.thumbnail != "" ) {
+                    newObject.thumbnail=prod.thumbnail
+                }
+                if (prod.price != "" ) {
+                    newObject.price=prod.price
+                }
+                if (prod.description != "" ) {
+                    newObject.description=prod.description
+                }
+                if (prod.stock != "" ) {
+                    newObject.stock=prod.stock
+                }
+                if (prod.category != "" ) {
+                    switch (parseInt(prod.category)) {
+                        case 1:
+                            newObject.category = "Categoria 1"
+                          break;
+                        case 2:
+                            newObject.category = "Categoria 2"
+                            break;
+                        case 3:
+                            newObject.category = "Categoria 3"
+                            break;
+                        case 4:
+                            newObject.category = "Categoria 4"
+                            break;
+                        default:
+                            newObject.category = "Categoria 4"
+                            break;
+                      }
+                }
+                await Product.updateOne({id: number}, newObject)
+                return { status: 'success', message: `Product ID ${number} updated.`}
+            } else {
+                return { status: 'error', message: `You are not the owner of the product with ID ${number}.`}
             }
-            if (prod.price != "" ) {
-                newObject.price=prod.price
-            }
-            if (prod.description != "" ) {
-                newObject.description=prod.description
-            }
-            if (prod.stock != "" ) {
-                newObject.stock=prod.stock
-            }
-            if (prod.category != "" ) {
-                newObject.category=prod.category
-            }
-        }
-        
-        await Product.updateOne({id: number}, newObject)
-        return { status: 'success', message: `Product ID ${number} updated.`, value: true}
-    
-    }
+            
+        }}
 
     validateFields =  async (product) => {
         try {
             if ( (typeof product.title === 'undefined') 
                 || (typeof product.description === 'undefined') 
                 || (typeof product.code === 'undefined')
-                || (typeof product.thumbnail === 'undefined')
+                //|| (typeof product.thumbnail === 'undefined')
                 || (typeof product.price === 'undefined')
                 || (typeof product.stock === 'undefined')
                 || (typeof product.category === 'undefined')

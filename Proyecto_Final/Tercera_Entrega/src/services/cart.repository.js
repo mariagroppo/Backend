@@ -4,52 +4,52 @@ export default class CartRepository {
         this.dao = dao;
     }
 
-    getAll = async () => {
-        return this.dao.getAll();
+    getAll = async (userId) => {
+        return this.dao.getAll(userId);
     }
 
-    getById = async (number) => {
-        return this.dao.getById(number);
+    getById = async (number,userId) => {
+        return this.dao.getById(number,userId);
     }
 
     asignId = async () => {
         return this.dao.asignId();
     }
 
-    save = async () => {
-        return this.dao.save();
+    save = async (userId) => {
+        return this.dao.save(userId);
     }
 
-    deleteById = async (id) => {
-        return this.dao.deleteById(id);
+    deleteById = async (id, userId) => {
+        return this.dao.deleteById(id, userId);
     }
 
     verifyProductIsCharged = async (idCart, id) => {
         return this.dao.verifyProductIsCharged(idCart, id);
     }
 
-    addProductInCart = async (cid, id, quantity) => {
-        return this.dao.addProductInCart(cid, id, quantity);
+    addProductInCart = async (cid, id, quantity,userId) => {
+        return this.dao.addProductInCart(cid, id, quantity,userId);
     }
 
-    updateCart = async (cid, id, qty) => {
-        return this.dao.updateCart(cid, id, qty);
+    updateCart = async (cid, id, qty, userId) => {
+        return this.dao.updateCart(cid, id, qty, userId);
     }
 
-    deleteProduct = async (cid, id) => {
-        return this.dao.deleteProduct(cid, id);
+    deleteProduct = async (cid, id, userId) => {
+        return this.dao.deleteProduct(cid, id, userId);
     }
 
-    updateCartGlobal = async (cid, newData) => {
-        return this.dao.updateCartGlobal(cid, newData);
+    updateCartGlobal = async (cid, newData, userId) => {
+        return this.dao.updateCartGlobal(cid, newData, userId);
     }
 
     updateCartGlobal2 = async (cid, newData) => {
         return this.dao.updateCartGlobal2(cid, newData);
     }
 
-    closeCart = async (cid) => {
-        return this.dao.closeCart(cid);
+    closeCart = async (cid, userId) => {
+        return this.dao.closeCart(cid,userId);
     }
 
     reopenCart = async (cid) => {

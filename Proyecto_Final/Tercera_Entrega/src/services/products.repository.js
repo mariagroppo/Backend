@@ -4,8 +4,8 @@ export default class ProductRepository {
         this.dao = dao;
     }
 
-    getAll = async (validLimit,page,sort,category) => {
-        return this.dao.getAll(validLimit,page,sort,category);
+    getAll = async (validLimit,page,sort,category,owner,enabled) => {
+        return this.dao.getAll(validLimit,page,sort,category,owner,enabled);
     }
 
     getById = async (number) => {
@@ -24,12 +24,12 @@ export default class ProductRepository {
         return this.dao.save(newProduct);
     }
 
-    deleteById = async (id) => {
-        return this.dao.deleteById(id);
+    deleteById = async (id,owner) => {
+        return this.dao.deleteById(id,owner);
     }
 
-    updateById = async (prod) => {
-        return this.dao.updateById(prod);
+    updateById = async (prod,owner) => {
+        return this.dao.updateById(prod,owner);
     }
 
     validateFields =  async (product) => {

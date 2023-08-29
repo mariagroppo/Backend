@@ -9,8 +9,7 @@ class TicketMongoDB {
             let amount=0;
             //console.log(cart)
             for (let index = 0; index < cart.products.length; index++) {
-                //amount = amount + cart.products[index].quantity * cart.products[0].price;
-                amount = amount + cart.products[index].quantity * 10;
+                amount = amount + cart.products[index].quantity * cart.products[index]._id.price;
             }
             const ticket = {
                 codeTicket: code,
@@ -19,7 +18,6 @@ class TicketMongoDB {
                 amount: amount,
                 purchaser: user.id
             }
-            //console.log(ticket)
             const newTicket = new Ticket(ticket);
             await newTicket.save();
             return { status: 'success', message: `Ticket guardado.`, value: newTicket}            
