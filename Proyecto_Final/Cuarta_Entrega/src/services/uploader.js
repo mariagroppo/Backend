@@ -9,13 +9,14 @@ const storage = multer.diskStorage({
         // Determina la carpeta de destino basada en el tipo de documento
         let docType = file.fieldname;
         if (docType === "image") {
-            cb(null, `${__dirname}/src/public/profiles`)
+            cb(null, `${__dirname}/src/public/docs/profiles`)
         } else {
-            cb(null, `${__dirname}/src/public/docs`)
+            cb(null, `${__dirname}/src/public/docs/docs`)
         }
       },
     filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`)
+        let name = req.session.user.email;
+        cb(null, `${name}-${Date.now()}-${file.originalname}`)
     }
 })
 

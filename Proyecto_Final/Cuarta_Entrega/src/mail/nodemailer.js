@@ -124,6 +124,117 @@ export async function mailPwd(userEmail) {
 }
 
 
+export async function mailDeleteProduct(user, product) {
+    try {
+        let html = `
+            <h3>Producto eliminado de su lista de productos.</h3>
+            <p>Nombre: ${user.name}</p>
+            <table>
+                <thead>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Nombre del producto</th>
+                        <th>Descripción</th>
+                        <th>Código</th>
+                        <th>Imagen</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <td>${product.id}</td>
+                        <td>${product.title}</td>
+                        <td>${product.description}</td>
+                        <td>${product.code}</td>
+                        <td>
+                            <img class="rounded mx-auto d-block imagenProducto" src=${product.thumbnail}>
+                        </td>
+                        <td>${product.price}</td>
+                    </tr>
+                </tbody>
+            </table>                
+            `
+        let mailTo = user.email;
+        let subject= 'Producto eliminado del ecommerce';
+        let mailOptions = {
+            from: process.env.APP_MAIL,
+            to: mailTo,
+            subject: subject,
+            html: html
+        }
+        await transporter.sendMail(mailOptions);
+        
+    } catch (error) {
+       console.log(error)
+    }
+    
+}
+
+
+export async function mailPremiumChange(user) {
+    try {
+        let html = `
+            <h3>Estimado admin,</h3>
+            <p>El usuario ${user.name} ha cargado documentación para pasar a estado PREMIUM.</p>
+            <table>
+                <thead>
+                    <tr class="text-center">
+                        <th>ID</th>
+                        <th>Nombre del usuario</th>
+                        <th>Procedure Status</th>
+                        <th>Rol actual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center">
+                        <td>${user.id}</td>
+                        <td>${user.name}</td>
+                        <td>Pending</td>
+                        <td>${user.role}</td>
+                    </tr>
+                </tbody>
+            </table>                
+            `
+        let mailTo = config.mailing.ADMIN_MAIL;
+        let subject= 'Cambio de categoriá solicitada.';
+        let mailOptions = {
+            from: process.env.APP_MAIL,
+            to: mailTo,
+            subject: subject,
+            html: html
+        }
+        await transporter.sendMail(mailOptions);
+        
+    } catch (error) {
+       console.log(error)
+    }
+    
+}
+
+
+export async function mailPremiumChangeSuccessfully(user) {
+    try {
+        let html = `
+            <h3>Estimado usuario,</h3>
+            <p>Se ha aprobado su solicitud para pasar a categoría PREMIUM.</p>
+            <p>Saludos.</p>
+            `
+        let mailTo = user.userEmail;
+        let subject= 'Cambio de categoriá aprobada.';
+        let mailOptions = {
+            from: process.env.APP_MAIL,
+            to: mailTo,
+            subject: subject,
+            html: html
+        }
+        await transporter.sendMail(mailOptions);
+        
+    } catch (error) {
+       console.log(error)
+    }
+    
+}
+
 export async function mailDeleteAccount(user) {
     try {
         console.log("mail a " + user.userEmail)

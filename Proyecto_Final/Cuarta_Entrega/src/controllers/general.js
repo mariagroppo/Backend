@@ -3,8 +3,9 @@ const pageNotFound = async (req, res) => {
 }
 
 const views_pageNotFound = async (req, res) => {
+    let userName = req.session.user.name;
     try {
-        res.render('../src/views/partials/pageNotFound.hbs', { userStatus: false});
+        res.render('../src/views/partials/pageNotFound.hbs', { userStatus: true, userName});
     } catch (error) {
         if (req.user) {
             return res.renderInternalError('registerForm controller error.', true)

@@ -34,12 +34,13 @@ export default class BaseRouter {
     handlePolicies = policies => {
         return (req,res,next) => {
             const user = req.session.user;
+            //console.log("ROUTER policies: " + user.role)
             if ((policies[0].toUpperCase() === 'PUBLIC')) return next();
             if (!user) return res.redirect('/login');
             if ((policies[0].toUpperCase() === 'ADMIN') && (user.role.toUpperCase() === 'ADMIN')) return next();
-            if ((policies[0].toUpperCase() === 'ADMIN') && (user.role.toUpperCase() !== 'ADMIN')) return res.sendUnauthorizedMessage();
-            if ((policies[0].toUpperCase() === 'PREMIUM') && (user.role.toUpperCase() === 'PREMIUMUSER')) return next();
-            if ((policies[0].toUpperCase() === 'PREMIUM') && (user.role.toUpperCase() !== 'PREMIUMUSER')) return res.sendUnauthorizedMessage();
+            if ((policies[0].toUpperCase() === 'ADMIN') && (user.role.toUpperCase() !== 'ADMIN')) return res.status(403).send({ status: "error", error: "You are not authorized to view this section." });
+            if ((policies[0].toUpperCase() === 'PREMIUM') && ((user.role.toUpperCase() === 'PREMIUMUSER') || (user.role.toUpperCase() === 'ADMIN'))) return next();
+            if ((policies[0].toUpperCase() === 'PREMIUM') && (user.role.toUpperCase() !== 'PREMIUMUSER')) return res.status(403).send({ status: "error", error: "You are not authorized to view this section." });
             if ((policies[0].toUpperCase() === 'USER')) return next();
             req.user = user;
             next();
@@ -50,10 +51,13 @@ export default class BaseRouter {
     generateCustomResponses = (req, res, next)=> {
         res.sendErrorMessage = message => res.status(500).send({status:'error', message});
         res.sendInternalErrorMessage = message => res.status(400).send({status:'error', message});
-        res.sendStatusAndMessage = (status, message) => res.send({status: status, message});
+        res.sendErrorMessageAndValue = (message, payload) => res.send({status:'error', message, payload});
+        
         res.sendSuccessMessage = message => res.status(200).send({status:'success', message});
         res.sendSuccessMessageAndValue = (message, payload) => res.status(200).send({status:'success', message: message, payload:payload});
-        res.sendUnauthorizedMessage = () => res.status(401).send({status:'error', message:"You are not authorized to view this section."});
+        res.sendStatusAndMessage = (status, message) => res.send({status: status, message: message});
+        res.sendStatusMessageAndValue = (status, message, payload) => res.send({status: status, message: message, payload: payload});
+        
         res.renderInternalError = (message, userStatus) => res.render('../src/views/partials/error.hbs', {
             message: message,
             userStatus: userStatus})

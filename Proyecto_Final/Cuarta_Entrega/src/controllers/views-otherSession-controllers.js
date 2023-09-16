@@ -9,7 +9,7 @@ const logout = async (req, res) => {
         }
         res.render('../src/views/main.hbs', {userStatus});
     } catch (error) {
-        res.RenderInternalError("Logout controller error.", false)
+        res.RenderInternalError("Logout controller error.", true)
     }
 }
 
@@ -17,7 +17,7 @@ const restorePasswordForm = async (req, res) => {
     try {
         res.render('../src/views/partials/session-restorePwd.hbs')
     } catch (error) {
-        res.RenderInternalError("restorePasswordForm controller error", false)
+        res.RenderInternalError("restorePasswordForm controller error", true)
     }
 }
 
@@ -46,9 +46,29 @@ const restorePassword = async (req, res) => {
     }
 }
 
+const current = async(req,res) =>{
+    let user = req.session.user;
+    try {
+        const answer = await userService.getUserByID(user.id);
+        let change = false;
+        if (answer.value.role === 'user') {
+            change = true
+        }
+        if (answer.status === 'success') {
+            res.render('../src/views/partials/user-profile.hbs', { user: answer.value, userName: user.name, userStatus: true, change})
+        } else {
+            res.RenderInternalError(answer.message, true) 
+        }
+
+    } catch (error) {
+        res.RenderInternalError("current controller error", false)
+    }
+}
+
 
 export default {
     logout,
     restorePasswordForm,
-    restorePassword
+    restorePassword,
+    current
 }

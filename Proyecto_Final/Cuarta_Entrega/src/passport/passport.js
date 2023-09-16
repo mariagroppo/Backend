@@ -16,11 +16,13 @@ import config from '../config/config.js';
 
 const LocalStrategy = local.Strategy; // UNA ESTRATEGIA LOCAL SIEMPRE SE BASA EN EL USERNAME + PASSWORD
 
+
 const initializePassport = () => {
     passport.use('register', new LocalStrategy({usernameField: 'userEmail', passwordField: 'inputPassword', passReqToCallback:true}, async (req, userEmail, inputPassword, done) => {
         try {
             const {first_name, last_name} = req.body;
             const hashedPassword = await createHash(inputPassword);
+            const last_connection = "";
             if (userEmail !== config.mailing.ADMIN_MAIL){
                 const user = {
                     first_name,
@@ -29,6 +31,7 @@ const initializePassport = () => {
                     userEmail,
                 }
                 const result = await userService.createUser(user);
+                //Wconsole.log(result.message)
                 if (result.status === 'success') {
                     done(null,result.value);
                 } else {
@@ -49,15 +52,14 @@ const initializePassport = () => {
             let user;
             if (userEmail === config.mailing.ADMIN_MAIL && inputPassword === config.mailing.ADMIN_PWD) {
                 user = {
-                    _id: "admin123",
+                    id: config.mailing.ADMIN_ID,
                     name: "admin",
                     email: userEmail,
                     role: 'admin'
                   };
-                //res.redirect('/api/products');
                 done(null, user);
             } else { 
-                //console.log(userLogin);
+                const userLogin = await userService.checkPassword(userEmail, inputPassword);
                 if (userLogin.status === "success") {
                     user = {
                         id: userLogin.value._id,
@@ -65,13 +67,13 @@ const initializePassport = () => {
                         email: userLogin.value.userEmail,
                         role: userLogin.value.role
                     };
-                    const result = await userService.updateUserLastConnection(userEmail);
+                    const answer = await userService.lastConnection(userEmail);
                     done(null, user);
                 } else {
+                    req.session.message = userLogin.message;
                     done(null, false, {message: 'Incorrect Password.'});
                 }
-            }
-            
+            }  
         } catch (error) {
             done(error)
         }  
@@ -120,7 +122,17 @@ const initializePassport = () => {
     
     /* Recibe id almacenado y hace el proceso inverso */
     passport.deserializeUser(async (id, done) => {
-        const user = await UserModel.findOne({id: id});
+        let user;
+        if (id === config.mailing.ADMIN_ID){
+            user = {
+                id: config.mailing.ADMIN_ID,
+                name: "admin",
+                email: userEmail,
+                role: 'admin'
+              };
+        } else {
+            user = await UserModel.findOne({id: id});
+        }
         done(null, user);
     });
 }

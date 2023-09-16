@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config();;
+dotenv.config();
 
 export default {
     app: {
@@ -14,6 +14,7 @@ export default {
         APP_PWD: process.env.APP_PWD,
         APP_MAIL: process.env.APP_MAIL,
         ADMIN_MAIL: process.env.ADMIN_MAIL,
-        ADMIN_PWD: process.env.ADMIN_PWD
+        ADMIN_PWD: process.env.ADMIN_PWD,
+        ADMIN_ID: process.env.ADMIN_ID
     }
 }

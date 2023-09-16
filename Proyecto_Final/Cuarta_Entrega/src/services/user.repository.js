@@ -4,10 +4,6 @@ export default class UserRepository {
         this.dao = dao;
     }
 
-    listUsers = async () => {
-        return this.dao.listUsers();
-    }
-
     verifyMail = async (email) =>{
         return this.dao.verifyMail(email);
     }
@@ -23,20 +19,47 @@ export default class UserRepository {
         return this.dao.getUserByEmail(email);
     }
 
-    updateUserPassword = async (email) =>{
-        return this.dao.updateUserPassword(email);
+    updateUserPassword = async (email, newPass) =>{
+        return this.dao.updateUserPassword(email, newPass);
     }
 
-    updateUserLastConnection = async (email) =>{
-        return this.dao.updateUserLastConnection(email);
+    lastConnection = async(email) => {
+        return await this.dao.lastConnection(email);
     }
-    
-    deleteUsersLastConnection = async () =>{
-        return this.dao.deleteUsersLastConnection();
+
+    listUsers = async () => {
+        return this.dao.listUsers();
     }
 
     usersLastConnection = async () =>{
         return this.dao.usersLastConnection();
     }
 
+    deleteUsersLastConnection = async () =>{
+        return this.dao.deleteUsersLastConnection();
+    }
+
+    updateProcedureStatus = async (uid) =>{
+        return this.dao.updateProcedureStatus(uid);
+    }
+
+    updateStatus = async (uid) =>{
+        return this.dao.updateStatus(uid);
+    }
+
+    updateDNIStatus = async (uid) =>{
+        return this.dao.updateDNIStatus(uid);
+    }
+
+    updateComp1Status = async (uid) =>{
+        return this.dao.updateComp1Status(uid);
+    }
+
+    updateComp2Status = async (uid) =>{
+        return this.dao.updateComp2Status(uid);
+    }
+
+    getUserByID = async (uid) =>{
+        return this.dao.getUserByID(uid);
+    }
 }

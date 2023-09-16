@@ -1,12 +1,18 @@
 import { Cart } from "../models/cartModel.js";
-import mongoose from "mongoose";
+import config from '../../../config/config.js'
+//import mongoose from "mongoose";
 //import { productService } from "../../../services/repository.js";
 
 class CartsMongoDB {
     /* Devuelve el array con los objetos presentes en el archivo ---------------------------------------- */
     getAll = async (userId) => {
         try {
-            const contenido = await Cart.find({user: userId}).lean().populate('products._id');
+            let contenido;
+            if (userId === config.mailing.ADMIN_ID) {
+                contenido = await Cart.find().lean().populate('products._id');
+            } else {
+                contenido = await Cart.find({user: userId}).lean().populate('products._id');
+            }
             return { status: 'success', message: "Carts ok.", value: contenido}
             
         } catch (error) {
@@ -167,6 +173,68 @@ class CartsMongoDB {
         }
     } 
     
+    
+    closeCart = async (cid,userId) => {
+        try {
+            await Cart.updateOne(
+                {idCart: cid, user: userId.toString()},
+                {$set: {"cartStatus": false } }
+            )
+            return { status: 'success', message: "Cart closed."}
+        } catch (error) {
+            return { status: 'error', message: "closeCart Manager error: " + error}
+        }
+    }
+
+    reopenCart = async (cid) => {
+        try {
+            await Cart.updateOne(
+                {idCart: cid},
+                {$set: {"cartStatus": true } }
+            )
+            return { status: 'success', message: "Cart reopened."}
+        } catch (error) {
+            return { status: 'error', message: "reopenCart Manager error: " + error}
+        }
+    }
+
+    deleteProduct = async (cid, id, userId) => {
+        try {
+            let cart = await this.getAll(userId);
+            let idCart;
+            let answer = await productService.getById(id);
+            if (answer.status === 'success') {
+                let pid = answer.value._id;
+                console.log(pid)
+                if ((cart.value.length > 0) && (cart.value[cart.value.length-1].cartStatus===true)) {
+                    idCart = cart.value[cart.value.length-1].idCart;
+                    if (idCart === cid) {
+                        if ((!isNaN(id)) && (id > 0)) {
+                            for (let index = 0; index < cart.value[cart.value.length-1].products.length; index++) {
+                                if (parseInt(cart.value[cart.value.length-1].products[index]._id.id) === parseInt(id)) {
+                                    await Cart.updateOne(
+                                        {idCart: idCart, user: userId},
+                                        {$pull: {products: {_id: pid}}});
+                                    return { status: 'success', message: `Product ID ${id} deleted.`}
+                                }
+                            }
+                            return { status: 'error', message: "Product not found."}
+                        }
+                        return { status: 'error', message: "ID must be an integer."}
+                    } else {
+                        return { status: 'error', message: `The cart ID ${cid} does not matches with the opened cart ID.`}
+                    }
+                } else {
+                    return ({status:'error', message: "No carts opened."})
+                }
+            } else {
+                return { status: 'error', message: answer.message}
+            }
+        } catch (error) {
+            return { status: 'error', message: "deleteProduct Manager error: " + error}
+        }
+    }
+    
     updateCart = async (cid, id, qty) => {
         try {
             let cart = await this.getAll();
@@ -196,39 +264,6 @@ class CartsMongoDB {
             }
         } catch (error) {
             return { status: 'error', message: "updateCart Manager error: " + error}
-        }
-    }
-    
-    deleteProduct = async (cid, id, userId) => {
-        try {
-            let cart = await this.getAll(userId);
-            let idCart;
-            if ((cart.value.length > 0) && (cart.value[cart.value.length-1].cartStatus===true)) {
-                idCart = cart.value[cart.value.length-1].idCart;
-                console.log("idCart: "+ idCart)
-                if (idCart === cid) {
-                    if ((!isNaN(id)) && (id > 0)) {
-                        for (let index = 0; index < cart.value[cart.value.length-1].products.length; index++) {
-                            console.log(cart.value[cart.value.length-1].products[index]._id.id)
-                            console.log(id)
-                            if (parseInt(cart.value[cart.value.length-1].products[index]._id.id) === parseInt(id)) {
-                                await Cart.updateOne(
-                                    {idCart: idCart, user: userId},
-                                    {$pull: {products: {id: id}}});
-                                return { status: 'success', message: `Product ID ${id} deleted.`}
-                            }
-                        }
-                        return { status: 'error', message: "Product not found."}
-                    }
-                    return { status: 'error', message: "ID must be an integer."}
-                } else {
-                    return { status: 'error', message: `The cart ID ${cid} does not matches with the opened cart ID.`}
-                }
-            } else {
-                return ({status:'error', message: "No carts opened."})
-            }
-        } catch (error) {
-            return { status: 'error', message: "deleteProduct Manager error: " + error}
         }
     }
     
@@ -285,29 +320,7 @@ class CartsMongoDB {
         }
     }
 
-    closeCart = async (cid,userId) => {
-        try {
-            await Cart.updateOne(
-                {idCart: cid, user: userId.toString()},
-                {$set: {"cartStatus": false } }
-            )
-            return { status: 'success', message: "Cart closed."}
-        } catch (error) {
-            return { status: 'error', message: "closeCart Manager error: " + error}
-        }
-    }
-
-    reopenCart = async (cid) => {
-        try {
-            await Cart.updateOne(
-                {idCart: cid},
-                {$set: {"cartStatus": true } }
-            )
-            return { status: 'success', message: "Cart reopened."}
-        } catch (error) {
-            return { status: 'error', message: "reopenCart Manager error: " + error}
-        }
-    }
+    
 }
 
 export default CartsMongoDB;

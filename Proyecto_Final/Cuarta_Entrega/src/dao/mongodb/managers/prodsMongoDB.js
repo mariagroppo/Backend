@@ -1,9 +1,10 @@
 import Product from "../models/productModel.js";
 import { generateProduct } from "../../../mocks/prods.mocks.js";
+import config from "../../../config/config.js";
 
 class ProductMongoDB {
     /* Devuelve el array con los objetos presentes en el archivo ---------------------------------------- */
-    getAll = async (validLimit,page,sort,category,owner,enabled) => {
+    getAll = async (validLimit,page,sort,category,owner,enabled,edition) => {
         try {
             let options = {
                 page: Number(page) || 1,
@@ -11,19 +12,37 @@ class ProductMongoDB {
                 sort: {price: Number(sort)},
             };
             let contenido;
-            if (category) {
-                if (!enabled) {
-                    contenido = await Product.paginate({category: category,  owner: { $ne: owner }},options);
+            //edition=true significa que estoy en mis productos
+            if (edition) {
+                if (category) {
+                    if (owner === config.mailing.ADMIN_ID) {
+                        contenido = await Product.paginate({category: category},options);
+                    } else {
+                        contenido = await Product.paginate({category: category, owner: owner},options);
+                    }
                 } else {
-                    contenido = await Product.paginate({category: category, owner: owner},options);
+                    if (owner === config.mailing.ADMIN_ID) {
+                        contenido = await Product.paginate({},options);
+                    } else {
+                        contenido = await Product.paginate({owner: owner},options);
+                    }
                 }
             } else {
-                if (!enabled) {
-                    contenido = await Product.paginate({ owner: { $ne: owner }},options);
+                if (category) {
+                    if (owner === config.mailing.ADMIN_ID) {
+                        contenido = await Product.paginate({category: category},options);
+                    } else {
+                        contenido = await Product.paginate({category: category,  owner: { $ne: owner }},options);
+                    }
                 } else {
-                    contenido = await Product.paginate({owner: owner},options);
+                    if (owner === config.mailing.ADMIN_ID) {
+                        contenido = await Product.paginate({},options);
+                    } else {
+                        contenido = await Product.paginate({ owner: { $ne: owner }},options);
+                    }
                 }
             }
+
             return { status: 'success', message: "Products ok.", value: contenido}
             
         } catch (error) {
@@ -137,7 +156,7 @@ class ProductMongoDB {
             if (parseInt(id)>0) {
                 let answer = await this.getById(id);
                 if (answer.status === 'success') {
-                    if ((answer.value.owner.toString() === owner) || (owner === 'admin123')) {
+                    if ((answer.value.owner.toString() === owner) || (owner === config.mailing.ADMIN_ID)) {
                         await Product.deleteOne({
                             id: id
                         })
@@ -159,10 +178,10 @@ class ProductMongoDB {
     updateById = async (prod, owner) => {
         let number=prod.id;
         let newObject = await Product.findOne({id: number});
-        if (newObject === []) {
+        if (newObject === null) {
             return { status: 'error', message: `Product ID ${number} do not exists.`}
         } else {
-            if ((owner === newObject.owner.toString()) || (owner === 'admin123')) {
+            if ((owner === newObject.owner.toString()) || (owner === config.mailing.ADMIN_ID)) {
                 if (prod.title !== "" ) {
                     newObject.title=prod.title
                 } 
@@ -226,17 +245,10 @@ class ProductMongoDB {
 
     fakerProducts = async(limit, page, sort) => {
         try {
-            /* let options = {
-                page: limit,
-                limit: page,
-                sort: {price: sort},
-            }; */
             let contenido=[];
             for (let index = 0; index < 20; index++) {
                 contenido.push(generateProduct());
             }
-            //let fakers = await contenido.paginate({},options);
-            //console.log(fakers)
             return { status: 'success', message: "Products ok.", value: contenido}
             
         } catch (error) {
@@ -244,40 +256,6 @@ class ProductMongoDB {
         }
     }
 
-
-    /* infoProducts = async (cart) => {
-        try {
-            let info = [];
-            let listado = await Product.find().lean();
-            if (cart.products.length > 0) {
-                for (let index = 0; index < cart.products.length; index++) {
-                    let idProduct = parseInt(cart.products[index].id);
-                    for (let b = 0; b < listado.length; b++) {
-                        if (parseInt(listado[b].id) === parseInt(idProduct)) {
-                            let a = {
-                                id: idProduct,
-                                quantity: cart.products[index].quantity,
-                                title: listado[b].title,
-                                thumbnail: listado[b].thumbnail,
-                                price: listado[b].price,
-                                description: listado[b].description,
-                                stock: listado[b].stock,
-                                category: listado[b].category,
-                                code: listado[b].code
-                            }
-                            info.push(a);
-                        }
-                        
-                    }
-                }
-                cart.products=info;
-            }
-            return cart
-        } catch (error) {
-            console.log(error)
-            return null;
-        }
-    } */
 }
 
 export default ProductMongoDB;

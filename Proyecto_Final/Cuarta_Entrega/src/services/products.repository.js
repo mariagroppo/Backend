@@ -4,8 +4,8 @@ export default class ProductRepository {
         this.dao = dao;
     }
 
-    getAll = async (validLimit,page,sort,category,owner,enabled) => {
-        return this.dao.getAll(validLimit,page,sort,category,owner,enabled);
+    getAll = async (validLimit,page,sort,category,owner,enabled,edition) => {
+        return this.dao.getAll(validLimit,page,sort,category,owner,enabled,edition);
     }
 
     getById = async (number) => {

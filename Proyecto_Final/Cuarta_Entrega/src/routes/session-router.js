@@ -23,7 +23,7 @@ export default class SessionRouter extends BaseRouter {
         this.get('/current', ['USER'], privacy('PRIVATE'), otherSessionControllers.current)
         this.get('/current/changePwd', ['USER'], privacy('PRIVATE'), otherSessionControllers.changePwdForm)
         this.post('/current/changePwd', ['USER'], privacy('PRIVATE'), otherSessionControllers.changePwd)
-        this.get('/restorePassword', ['PUBLIC'], privacy('NO_AUTHENTICATED'), otherSessionControllers.restorePwdForm)
+        //this.get('/restorePassword', ['PUBLIC'], privacy('NO_AUTHENTICATED'), otherSessionControllers.restorePwdForm)
         
         //this.post('/restore', ['PUBLIC'], privacy('NO_AUTHENTICATED'), otherSessionControllers.restorePassword);
         this.get('*', ['PUBLIC'], privacy('NO_AUTHENTICATED'), generalControllers.pageNotFound)

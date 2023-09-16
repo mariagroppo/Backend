@@ -17,7 +17,6 @@ const app = express();
 const PORT = config.app.PORT;
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(__dirname + '/src/public'));
-app.use(express.json());
 
 /* SESSION ---------------------------------------------------------------------------------------- */
 app.use(session({
@@ -84,15 +83,14 @@ app.engine('hbs',engine( {
       }
 } ));
 
-
 /* SOCKETS ----------------------------------------------------------------------------------------- */
-import { Server } from 'socket.io';
-import socketProducts from './src/sockets/sockets.js';
+/* import { Server } from 'socket.io';
+import socketProducts from './src/sockets/sockets.js'; */
 
 const server = app.listen(PORT, () => {
     console.log(`Servidor http escuchando en el puerto ${server.address().port} usando express`);
 })
 
 server.on("error", e=> console.log(`Error en el servidor ${e}`));
-const socketServer = new Server(server); // socketServer sera un servidor para trabajar con sockets.
-socketProducts(socketServer);
+/* const socketServer = new Server(server); // socketServer sera un servidor para trabajar con sockets.
+socketProducts(socketServer); */

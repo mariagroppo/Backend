@@ -3,36 +3,38 @@ import { createHash, validatePassword } from "../../utils.js";
 import crypto from 'crypto';
 import { mailPwd } from "../mail/nodemailer.js";
 
-const logout = async (req, res, next) => {
+const logout = async (req, res) => {
     try {
         if (req.session) {
+            const email = req.session.user.email;
             req.session.destroy();
+            await userService.lastConnection(email);
         }
-        res.status(200).send("Session closed.");
+        res.sendSuccessMessage("Logout process ok.")
     } catch (error) {
-        res.sendErrorMessage("Logout error: " + error)
+        res.sendErrorMessage("logout controller error: " + error)
     }
     
 }
 
-const current = async(req,res, next) =>{
+const current = async(req,res) =>{
     try {
-        res.status(200).send(req.session.user);
+        res.sendSuccessMessage(req.session.user)
     } catch (error) {
         res.sendErrorMessage("Current error: " + error)
     }
 }
 
 
-const changePwdForm = async (req, res, next) => {
+const changePwdForm = async (req, res) => {
     try {
-        res.status(200).send('Ingrese su actualPassword y newPassword.');
+        res.sendSuccessMessage("Please write your actualPassword and your newPassword.")
     } catch (error) {
-        res.sendErrorMessage("changePwdForm error: " + error)
+        res.sendErrorMessage( "changePwdForm controller error: " + error)
     }
 }
 
-const changePwd = async (req, res, next) => {
+const changePwd = async (req, res) => {
     let userEmail = req.session.user.email;
     const user = (await userService.getUserByEmail(userEmail)).value;
     try {
@@ -47,7 +49,7 @@ const changePwd = async (req, res, next) => {
                 } else {
                     const newHashedPassword = await createHash(newPassword);
                     let answer = await userService.updateUserPassword(userEmail, newHashedPassword);
-                    res.sendStatusAndMessage(answer.status,answer.message);
+                    res.sendStatusAndMessage(answer.status, answer.message)
                 }
             } else {
                 res.sendErrorMessage("The actual password is not correct.")
@@ -57,36 +59,53 @@ const changePwd = async (req, res, next) => {
     }
 }
 
-const restorePwdForm = async (req, res, next) => {
+const restorePwdForm = async (req, res) => {
     try {
-        res.status(200).send('Please complete your email.');
+        res.sendSuccessMessage('Please complete your email.')
     } catch (error) {
         res.sendErrorMessage("restorePwdForm controller error: " + error)
     }
 }
 
-const restorePassword = async (req, res, next) => {
+/* const restorePassword = async (req, res, next) => {
     try {
         let { userEmail } = req.body;
         if(!userEmail) {
-            res.sendErrorMessage("Please insert a valid email.")
+            req.info = {
+                status: 'error',
+                message: "Please insert a valid email."
+            };
+            next();
         }
         const user = await userService.getUserByEmail(userEmail);
         let userId = user._id;
         if(!user) {
-            res.sendErrorMessage("The email charged is not registered in this ecommerce.")
+            req.info = {
+                status: 'error',
+                message: "The email charged is not registered in this ecommerce."
+            };
+            next();
         } else {
             const token = crypto.randomBytes(32).toString('hex');
             //const resetTokens[userId] = token;
             await mailPwd(userEmail, token);
-            res.status(200).send("The email to change password was sent.");
+            req.info = {
+                status: 'success',
+                message: "The email to change password was sent."
+            };
+            next();
+            res.sendSuccessMessage('Please complete your email.')
+
         }
         
     } catch (error) {
-        res.sendErrorMessage("restorePassword controller error: " + error)
+        req.info = {
+            status: 'error',
+            message: "restorePassword controller error: " + error
+        };
+        next();
     }
-}
-
+} */
 
 export default {
     logout,
@@ -94,5 +113,5 @@ export default {
     changePwdForm,
     changePwd,
     restorePwdForm,
-    restorePassword
+    //restorePassword
 }

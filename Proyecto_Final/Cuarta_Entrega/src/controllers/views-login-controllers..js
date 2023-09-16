@@ -1,6 +1,6 @@
 const loginForm = async (req, res) => {
     try {
-        res.status(200).render('../src/views/partials/session-login.hbs', { userStatus: false})
+        res.render('../src/views/partials/session-login.hbs', { userStatus: false})
     } catch (error) {
         res.renderInternalError('getLoginForm controller error.', false)
     }
@@ -8,9 +8,15 @@ const loginForm = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        res.status(200).redirect('/products',)
+        req.session.user = {
+            id: req.user.id,
+            name: req.user.name,
+            email: req.user.email,
+            role: req.user.role
+        }
+        res.redirect('/products')
     } catch (error) {
-        res.renderInternalError('login controller error.', false)
+        res.render('../src/views/partials/error.hbs', { message: "login controller error: " + error , userStatus: false})
     }
 }
 

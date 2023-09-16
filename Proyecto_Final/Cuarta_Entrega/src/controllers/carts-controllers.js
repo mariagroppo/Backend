@@ -1,107 +1,71 @@
-import { cartService, productService, ticketsService } from "../../../Tercera_Entrega/src/services/repository.js";
+import { cartService, productService, ticketsService } from "../services/repository.js";
 import { mailProducts } from '../mail/nodemailer.js'
 
-const getCarts = async (req, res, next) => {
-    let userName = req.session.user.name;
+const getCarts = async (req, res) => {
     let userId = req.session.user.id;
+    let values;
     try {
         let listado = await cartService.getAll(userId);  
         if (listado.value.length>0) {
-            req.info = {
-                status: 'success',
-                message: "List of carts ok.",
+            values = {
                 value: listado.value,
-                cartsExists: true,
-                userName,
+                cartsExists: true
             };
-            next();
+            res.sendSuccessMessageAndValue("List of carts ok.", values)
         } else {
-            req.info = {
-                status: 'success',
-                message: "No carts to list.",
+            values = {
                 value: null,
-                cartsExists: false,
-                userName,
+                cartsExists: false
             };
-            next();
+            res.sendSuccessMessage("You do not have carts opened.", values)
         }
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "getCarts controller error: " + error
-        };
-        next();
+        res.sendErrorMessage("getCarts Controller error: " + error)
     }
 }
-const addNewCart = async (req, res, next) => {
-    let userName = req.session.user.name;
+const addNewCart = async (req, res) => {
     let userId = req.session.user.id;
     try {
         let cart = await cartService.save(userId);
-        req.info = {
-            status: cart.status,
-            message: cart.message,
-            value: cart.value,
-            userName,
-        };
-        next();
+        res.sendStatusMessageAndValue(cart.status, cart.message, cart.value)
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "addNewCart controller error: " + error,
-            value: null,
-            userName,
-        };
-        next();
+        res.sendErrorMessageAndValue("addNewCart controller error: " + error, null)
     }
 }
 
-const getCartById = async (req,res,next) => {
-    let userName = req.session.user.name;
+const getCartById = async (req,res) => {
     let userId = req.session.user.id;
-
+    let values;
     try {
         let cid = req.params.cid;
         if (isNaN(cid)){
-            res.sendError("The ID must be an integer.")
+            res.sendErrorMessage("The ID must be an integer.")
         } else {
             let cart = await cartService.getById(cid, userId);    
-            req.info = {
-                status: cart.status,
-                message: cart.message,
+            values = {
                 value: cart.value,
-                pExist: cart.pExist,
-                userName,
+                pExist: cart.pExist
             };
-            next();
+            res.sendStatusMessageAndValue(cart.status, cart.message, values)
         }
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "getCartById controller error: " + error,
-            value: null,
-            userName,
-        };
-        next();
+        res.sendErrorMessage("getCartById controller error: " + error)
     }
 }
 
-const deleteCartById = async (req, res, next) => {
-    let userName = req.session.user.name;
+const deleteCartById = async (req, res) => {
     let userId = req.session.user.id;
     try {
         let idCart = parseInt(req.params.cid);
         let answer;
+        let values;
         if (!isNaN(idCart)) {
             answer = await cartService.deleteById(idCart,userId);
-            req.info = {
-                status: answer.status,
-                message: answer.message,
+            values = {
                 value: answer.value,
-                pExist: answer.pExist,
-                userName,
+                pExist: answer.pExist
             };
-            next();
+            res.sendStatusMessageAndValue(answer.status,answer.message,values)
         } else {
             req.info = {
                 status: 'error',
@@ -111,49 +75,28 @@ const deleteCartById = async (req, res, next) => {
             next();
         }
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "deleteCartById controller error: " + error,
-            userName,
-        };
-        next();
+        res.sendErrorMessage("deleteCartById controller error: " + error)
     }
 }
 
-const addProductInCart = async (req, res, next) => {
-    let userName = req.session.user.name;
+const addProductInCart = async (req, res) => {
     let userId = req.session.user.id;
     try {
         let id = parseInt(req.params.pid);
         let qty = parseInt(req.body.productQtyInput);
-        let product = await productService.getById(id,userId);
+        let product = await productService.getById(id);
         if (product.status === 'success') {
             let answer = await cartService.addProductInCart(product.value, qty, userId);
-            req.info = {
-                status: answer.status,
-                message: answer.message,
-                userName,
-            };
-            next();
+            res.sendStatusAndMessage(answer.status, answer.message)
         } else {
-            req.info = {
-                status: product.status,
-                message: product.message,
-                userName,
-            };
-            next();
+            res.sendStatusAndMessage(product.status, product.message)
         }
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "addProductInCart controller error: " + error,
-            userName,
-        };
-        next();
+        res.sendErrorMessage("addProductInCart controller error: " + error)
     }
 }
 
-const updateCart = async (req, res, next) => {
+/* const updateCart = async (req, res, next) => {
     let userName = req.session.user.name;
     let userId = req.session.user.id;
     try {
@@ -176,35 +119,22 @@ const updateCart = async (req, res, next) => {
         };
         next();
     }
-}
+} */
 
 
-const deleteProduct = async (req,res,next) => {
-    let userName = req.session.user.name;
+const deleteProduct = async (req,res) => {
     let userId = req.session.user.id;
     try {
-        let id = parseInt(req.params.id);
+        let id = parseInt(req.params.pid);
         let cid = parseInt(req.params.cid);
-        console.los(id + "-" + cid);
         let answer = await cartService.deleteProduct(cid, id, userId);
-        req.info = {
-            status: answer.status,
-            message: answer.message,
-            userName,
-        };
-        next();
+        res.sendStatusAndMessage(answer.status, answer.message)
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "deleteProduct controller error: " + error,
-            userName,
-        };
-        next();
+        res.sendErrorMessage("deleteProduct controller error: " + error)
     }
 }
 
-const closeCart = async (req, res, next) => {
-    let userName = req.session.user.name;
+const closeCart = async (req, res) => {
     let userId = req.session.user.id;
 
     try {
@@ -234,73 +164,31 @@ const closeCart = async (req, res, next) => {
                     let answer = await cartService.closeCart(cid, userId);
                     if (answer.status === 'success') {
                         //Crear ticket
-                        let user = {
-                            email: "mariagroppo86@gmail.com",
-                            name: "mey",
-                            id: userId
-                        }
-                        //let ticketCreate = await ticketsService.save(cart.value, req.session.user);
-                        let ticketCreate = await ticketsService.save(cart.value, user);
+                        let ticketCreate = await ticketsService.save(cart.value, req.session.user);
                         if (ticketCreate.status === 'success') {
                             //Enviar correo con info.
                             await mailProducts(cart.value, user)
-                            req.info = {
-                                status: 'success',
-                                message: "Emails sent.",
-                                value: ticketCreate.value,
-                                userName,
-                            };
-                            next();
+                            res.sendSuccessMessageAndValue("Emails sent.", ticketCreate.value)
                         } else {
                             // Abro de nuevo el carrito
                             await cartService.reopenCart(cid);
-                            req.info = {
-                                status: 'error',
-                                message: ticketCreate.message,
-                                userName,
-                            };
-                            next();
+                            res.sendErrorMessage(ticketCreate.message)
                         }
 
                     } else {
-                        req.info = {
-                            status: 'error',
-                            message: answer.message,
-                            userStatus: true,
-                            userName,
-                        };
-                        next();
+                        res.sendErrorMessage(answer.message)
                     }
-    
-    
                 } else {
-                    req.info = {
-                        status: 'error',
-                        message: "There is no stock for some products. Please review the wanted quantity. " + JSON.stringify(productsWithoutStock),
-                        userName,
-                    };
-                    next();
+                    res.sendErrorMessage("There is no stock for some products. Please review the wanted quantity. " + JSON.stringify(productsWithoutStock))
                 }
             }
 
         } else {
-            req.info = {
-                status: 'error',
-                message: "There are no products in the cart.",
-                userStatus: true, 
-                userName,
-            };
-            next();            
+            res.sendErrorMessage("There are no products in the cart.")
         }
         //res.render('../src/views/partials/pageNotFound.hbs', {userStatus: true, userName})
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "closeCart controller error: " + error,
-            userStatus: true, 
-            userName,
-        };
-        next(); 
+        res.sendErrorMessage("closeCart controller error: " + error)
     }
 }
 
@@ -310,7 +198,7 @@ export default {
     getCartById,
     deleteCartById,
     addProductInCart,
-    updateCart,
+    //updateCart,
     deleteProduct,
     closeCart
 }

@@ -23,18 +23,27 @@
                     {{!-- <li class="nav-item">
                         <a class="nav-link textColor" href="/realtimeproducts">Real Time products</a>
                     </li> --}}
-                    <li class="nav-item">
+                    {{!-- <li class="nav-item">
                         <a class="nav-link textColor" href="/chat">Chat</a>
+                    </li> --}}
+                    {{!-- <li class="nav-item">
+                        <a class="nav-link textColor" href="/faker">Faker-js</a>
+                    </li> --}}
+                    {{#if enabled}}
+                    <li class="nav-item">
+                        <a class="nav-link textColor" href="/users">Listado Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link textColor" href="/faker">Faker-js</a>
+                        <a class="nav-link textColor" href="/users/lastConnection">Listado Last Connection</a>
                     </li>
+                    {{/if}}
                 </ul>
             </div>
             {{/if}}
             {{#if userStatus}}
             <div>
                 <button class="btn btn-outline-dark disabled bg-light mx-2" type="submit" id="userName"> Bienvenid@ {{userName}}</button>
+                <a href="/current"><img class="imgPerfil" src="/docs/profiles/64dd58f5dc67160b2b523087.jpg" alt=""></a>
                 <a class="btn btn-outline-dark bg-success mx-2" aria-current="page" href="/logout">Desloguearse</a>
             {{else}}
                 <a class="btn btn-outline-dark bg-success mx-2" aria-current="page" href="/register">Registrarse</a>

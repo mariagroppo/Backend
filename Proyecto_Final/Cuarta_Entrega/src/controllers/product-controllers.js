@@ -1,10 +1,11 @@
-
 import { productService } from '../services/repository.js';
 import { validateLimit, validatePage } from '../../utils.js';
+import { mailDeleteProduct } from '../mail/nodemailer.js';
 
-const getProducts = async (req, res, next) => {
+const getProducts = async (req, res) => {
     let userName = req.session.user.name;
     let userId = req.session.user.id;
+    //enabled habilta a la edicion de prductos.
     let enabled = true;
     if ((req.url === '/products') || (req.url === '/')) {
         enabled = false;
@@ -24,10 +25,9 @@ const getProducts = async (req, res, next) => {
         let hasNextPage = listado.value.hasNextPage;
         let prevPage = listado.value.prevPage;
         let nextPage = listado.value.nextPage;
+        let values;
         if (listado.value.docs.length>0){
-            req.info = {
-                status: 'success',
-                message: "Products list ok",
+            let values = {
                 prods: listado.value.docs,
                 productsExists: true,
                 realTime: false,
@@ -41,45 +41,32 @@ const getProducts = async (req, res, next) => {
                 category,
                 enabled
             };
-            next();
+            res.sendSuccessMessageAndValue("Products list ok", values)
+            
         } else {
-            req.info = {
-                status: 'success',
-                message: "No products available.",
+            values = {
                 prods: [],
                 productsExists: false,
                 realTime: false,
                 enabled
             };
-            next();
+            res.sendSuccessMessageAndValue("No products available.", values)
         }
         
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "getProducts Controller error: " + error
-        };
-        next();
+        res.sendErrorMessage("getProducts Controller error: " + error)
     }
 }
 
-const addProductForm = async (req, res, next) => {
+const addProductForm = async (req, res) => {
     try {
-        req.info = {
-            status: 'success',
-            message: "Please, complete the following information about your new product: name, description, code, url, price, stock category."
-        };
-        next();
+        res.sendSuccessMessage("Please, complete the following information about your new product: title, description, code, thumbnail, price, stock, category.");
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "BACK addProductForm Controller error: " + error
-        };
-        next();
+        res.sendErrorMessage("getProducts Controller error: " + error)
     }
 }
 
-const addProduct = async (req, res, next) => {
+const addProduct = async (req, res) => {
     let userId = req.session.user.id;
     try {
         const {title, description, code, thumbnail, price, stock, category} = req.body;
@@ -87,49 +74,25 @@ const addProduct = async (req, res, next) => {
         if (validateFields.value === true) {
             const prod = {title, description, code, thumbnail, price, stock, category, userId};
             const newProd = await productService.save(prod);
-            //res.sendSuccessMessage(newProd.message);
-            req.info = {
-                status: newProd.status,
-                message: newProd.message
-            };
+            res.sendStatusAndMessage(newProd.status, newProd.message)
         } else {
-            req.info = {
-                status: 'error',
-                message: validateFields.message
-            };
-            //res.sendError(validateFields.message)    
+            res.sendErrorMessage(validateFields.message)
         }
-        next();
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "BACK addProduct Controller error: " + error
-        };
-        next();
-        //res.sendError("addProduct controller error");
+        res.sendErrorMessage("BACK addProduct Controller error: " + error)
     }
 }
 
-const getProductById = async (req, res, next) => {
+const getProductById = async (req, res) => {
     try {
         let product = await productService.getById(req.params.pid);
-        req.info = {
-            status: product.status,
-            message: product.message,
-            value: product.value
-        };
-        next();
+        res.sendStatusMessageAndValue(product.status,product.message,product.value)
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "BACK getProductById Controller error: " + error,
-            value: prod
-        };
-        next();
+        res.sendErrorMessage("BACK getProductById Controller error: " + error)
     }
 }
 
-const updateProductById = async (req, res, next) => {
+const updateProductById = async (req, res) => {
     let userId = req.session.user.id;
     try {
         const {title, description, thumbnail, price, stock, category} = req.body;
@@ -144,56 +107,36 @@ const updateProductById = async (req, res, next) => {
             category: category
         }
         if (isNaN(id)){
-            req.info = {
-                status: 'error',
-                message: "The ID must be a number.",
-            };
-            next();       
+            res.sendErrorMessage("The ID must be a number.")
         } else {
             const answer = await productService.updateById(newProd,userId);
-            req.info = {
-                status: answer.status,
-                message: answer.message
-            };
-            next(); 
+            res.sendStatusAndMessage(answer.status,answer.message)
         }
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "updateProductById Controller error: " + error,
-        };
-        next();        
+        res.sendErrorMessage("updateProductById Controller error: " + error)
     }
 }
 
-const deleteProductById = async(req,res,next)=> {
+const deleteProductById = async(req,res)=> {
     let userId = req.session.user.id;
+    let user = req.session.user;
     try {
         let id = parseInt(req.params.pid);
         if (!isNaN(id)) {
+            let product = await productService.getById(id);
             let answer = await productService.deleteById(id,userId);
-            req.info = {
-                status: answer.status,
-                message: answer.message,
-            };
-            next(); 
+            //console.log("Respuesta de deleteById: " + answer)
+            if (answer.status === 'success') {
+                await mailDeleteProduct(user, product.value)
+            }
+            res.sendStatusAndMessage(answer.status,answer.message)
         } else {
-            req.info = {
-                status: 'error',
-                message: "The ID must be a number.",
-            };
-            next(); 
+            res.sendErrorMessage("The ID must be a number.")
         }
     } catch (error) {
-        req.info = {
-            status: 'error',
-            message: "deleteProductById Controller error: " + error,
-        };
-        next(); 
+        res.sendErrorMessage("deleteProductById Controller error: " + error)
     }
 }
-
-
 
 export default {
     getProducts,
