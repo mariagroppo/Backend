@@ -62,4 +62,12 @@ export default class UserRepository {
     getUserByID = async (uid) =>{
         return this.dao.getUserByID(uid);
     }
+
+    backToUser = async (uid) =>{
+        return this.dao.backToUser(uid);
+    }
+
+    deleteUser = async (uid) =>{
+        return this.dao.deleteUser(uid);
+    }
 }

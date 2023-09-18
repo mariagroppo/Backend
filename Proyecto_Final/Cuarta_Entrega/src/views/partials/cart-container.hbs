@@ -10,7 +10,7 @@
     <div class="container-fluid fontColor">
         {{#if pExist}}
             <div>
-            <form class="" action="/carts/update/{{cart.idCart}}" method="post">
+            
                 <table class="table">
                     <thead class="">
                         <tr class="text-center fontColor">
@@ -33,10 +33,13 @@
                                 </td>
                                 <input type="hidden" class="productQtyInput2" id={{this._id.id}} value={{this.quantity}}>
                                 <td class="col1 groupButtons">
-                                    <button type="button" id="btnRest2" name={{this._id.id}} class="btn col btnRest">-</button>
-                                    <input class="productQtyInput2" name={{this._id.id}} id={{this._id.id}} value={{this.quantity}}>
-                                    <button type="button" id="btnSum2" name={{this._id.id}} class="btn col btnSum">+</button>
-                                    <span class="">Stock disponible: {{this._id.stock}}</span>
+                                    <form class="container" action="/carts/update/{{../cart.idCart}}" method="post">
+                                        <button type="button" id="btnRest2" name={{this._id.id}} class="btn col btnRest">-</button>
+                                        <input class="productQtyInput2" name={{this._id.id}} id={{this._id.id}} value={{this.quantity}}>
+                                        <button type="button" id="btnSum2" name={{this._id.id}} class="btn col btnSum">+</button>
+                                        <span class="">Stock disponible: {{this._id.stock}}</span>
+                                        <button type="submit" class="btn btn-primary m-2 col">Update</button>
+                                    </form>
                                 </td>
                                 <td>
                                     {{this._id.title}}
@@ -65,9 +68,8 @@
                         {{/each}}
                     </tbody>
                 </table>
-                <input type="hidden" name="idCart" value={{cart.idCart}}>
-                <button type="submit" class="btn btn-success m-2 col">Guardar cambios</button>
-            </form>
+
+            
 
             </div>
             

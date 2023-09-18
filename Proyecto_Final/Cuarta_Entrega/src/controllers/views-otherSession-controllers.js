@@ -1,4 +1,5 @@
-import { createHash, validatePassword } from "../../utils.js";
+import { fileExists, createHash, validatePassword } from "../../utils.js";
+import config from "../config/config.js";
 import { userService } from "../services/repository.js";
 
 const logout = async (req, res) => {
@@ -46,29 +47,82 @@ const restorePassword = async (req, res) => {
     }
 }
 
-const current = async(req,res) =>{
-    let user = req.session.user;
+const current = async (req,res) =>{
+    let userName = req.session.user.name;
+    let userRole = req.session.user.role;
+    let email = req.session.user.email;
+    let fileOK = await fileExists(email);
+    if (fileOK === false) {
+        email = 'perfil'
+    }
+    let myProducts = false;
+    if (userRole === 'premiumUser') {
+        myProducts = true;
+    };
+    let enabled = false;
+    let user;
+    if (userName === 'admin') {
+        enabled = true;
+        user = {
+            id: config.mailing.ADMIN_ID,
+            first_name: 'admin',
+            last_name: 'admin',
+            role: 'admin'
+        }
+    } else {
+        user = await userService.getUserByID(req.session.user.id);
+    }
+    
+    //console.log(user)
     try {
-        const answer = await userService.getUserByID(user.id);
         let change = false;
-        if (answer.value.role === 'user') {
+        if (userRole === 'user') {
             change = true
         }
-        if (answer.status === 'success') {
-            res.render('../src/views/partials/user-profile.hbs', { user: answer.value, userName: user.name, userStatus: true, change})
-        } else {
-            res.RenderInternalError(answer.message, true) 
-        }
-
+        res.render('../src/views/partials/user-profile.hbs', { user: user.value, userName, userStatus: true, change, enabled, email})
     } catch (error) {
-        res.RenderInternalError("current controller error", false)
+        res.render('../src/views/partials/error.hbs', { message: "current controller error: " + error, userStatus: true, userName, enabled, myProducts, email})
     }
 }
 
+const uploadProfileImage = async (req,res) =>{
+    let userName = req.session.user.name;
+    let userRole = req.session.user.role;
+    let email = req.session.user.email;
+    let fileOK = await fileExists(email);
+    if (fileOK === false) {
+        email = 'perfil'
+    }
+    let myProducts = false;
+    if (userRole === 'premiumUser') {
+        myProducts = true;
+    };
+    let enabled = false;
+    let user;
+    if (userName === 'admin') {
+        enabled = true;
+        user = {
+            id: config.mailing.ADMIN_ID,
+            first_name: 'admin',
+            last_name: 'admin',
+            role: 'admin'
+        }
+    } else {
+        user = await userService.getUserByID(req.session.user.id);
+    }
+    try {
+        res.redirect('/current');   
+    } catch (error) {
+        res.render('../src/views/partials/error.hbs', { message: "uploadProfileImage controller error: " + error, userStatus: true, userName, enabled, myProducts, email})
+    }
+
+
+}
 
 export default {
     logout,
     restorePasswordForm,
     restorePassword,
-    current
+    current,
+    uploadProfileImage
 }

@@ -30,6 +30,13 @@
                                 </td>
                                 <td>
                                     {{this.role}}
+                                    {{#if this.premium}}
+                                    <div>
+                                        <form class="container" action="/backToUser/{{this.id}}" method="post">
+                                            <button type="submit" class="btn btn-danger m-2 col">Back to "user"</button>
+                                        </form>
+                                    </div>
+                                    {{/if}}
                                 </td>
                                 <td>
                                     {{this.procedureStatus}}
@@ -73,13 +80,8 @@
                                 </td>
                                 <td>
                                     <div>
-                                        <form class="container" action="" method="post">
+                                        <form class="container" action="/delete/{{this.id}}" method="post">
                                             <button type="submit" class="btn btn-danger m-2 col">X</button>
-                                        </form>
-                                    </div>
-                                    <div>
-                                        <form class="container" action="" method="post">
-                                            <button type="submit" class="btn btn-danger m-2 col">Back to "user"</button>
                                         </form>
                                     </div>
                                 </td>

@@ -7,7 +7,6 @@ import viewsOtherSessionControllers from '../controllers/views-otherSession-cont
 import viewsUsersControllers from '../controllers/views-users-controllers.js'
 import viewsProductsControllers from '../controllers/views-products-controllers.js';
 import viewsCartsControllers from '../controllers/views-carts-controllers.js';
-import cartsControllers from '../controllers/carts-controllers.js';
 import generalControllers from '../controllers/general.js';
 import BaseRouter from './router.js';
 import uploader from '../services/uploader.js';
@@ -31,6 +30,7 @@ export default class ViewsRouter extends BaseRouter {
         this.get('/current', ['USER'], privacy('PRIVATE'), viewsOtherSessionControllers.current);
         this.get('/current/changePwd', ['USER'], privacy('PRIVATE'), viewsOtherSessionControllers.changePwdForm)
         this.post('/current/changePwd', ['USER'], privacy('PRIVATE'), viewsOtherSessionControllers.changePwd)
+        this.post('/current/uploadImage', ['USER'], privacy('PRIVATE'), uploader.any(), viewsOtherSessionControllers.uploadProfileImage);
 
         /* PRODUCTOS  ------------------------------------------------------------ */
         this.get('/products', ['USER'], privacy('PRIVATE'), viewsProductsControllers.viewProducts);
@@ -49,11 +49,14 @@ export default class ViewsRouter extends BaseRouter {
         /* USERS ------------------------------------------------------------------ */
         this.get('/users', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.listAllUsers)
         this.get('/users/lastConnection', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.usersLastConnection)
-        this.post('/', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.deleteUsersLastConnection)
+        this.post('/users/delete', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.deleteUsersLastConnection)
         
         this.get('/users/documents', ['USER'], privacy('PRIVATE'), viewsUsersControllers.uploadPremiumDocForm);
         this.post('/users/documents', ['USER'], privacy('PRIVATE'), uploader.any(), viewsUsersControllers.uploadPremiumDoc);
         this.post('/premium/:uid', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.changeUserToPremium);
+        this.post('/backToUser/:uid', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.backToUser);
+        this.post('/delete/:uid', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.deleteUser);
+        
         this.post('/premium/DNI/:uid', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.updateDNIStatus);
         this.post('/premium/comp1/:uid', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.updateComp1Status);
         this.post('/premium/comp2/:uid', ['ADMIN'], privacy('PRIVATE'), viewsUsersControllers.updateComp2Status);
@@ -66,7 +69,7 @@ export default class ViewsRouter extends BaseRouter {
         this.post('/carts/product/:pid',  ['USER'], privacy('PRIVATE'), viewsCartsControllers.addProductInCart);
         this.post('/carts/delete/:cid/product/:pid', ['USER'], privacy('PRIVATE'), viewsCartsControllers.deleteProduct)
         
-        //this.post('/carts/update/:cid', ['USER'], privacy('PRIVATE'), viewsCartsControllers.updateCart);
+        this.post('/carts/update/:cid', ['USER'], privacy('PRIVATE'), viewsCartsControllers.updateCart);
         this.post('/closeCart/:cid', ['USER'], privacy('PRIVATE'), viewsCartsControllers.closeCart)
         this.get('*', ['USER'], privacy('PRIVATE'), generalControllers.views_pageNotFound)
         

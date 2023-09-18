@@ -5,44 +5,37 @@ import config from "../../../config/config.js";
 class ProductMongoDB {
     /* Devuelve el array con los objetos presentes en el archivo ---------------------------------------- */
     getAll = async (validLimit,page,sort,category,owner,enabled,edition) => {
-        try {
+            try {
             let options = {
                 page: Number(page) || 1,
                 limit: Number(validLimit),
                 sort: {price: Number(sort)},
             };
             let contenido;
-            //edition=true significa que estoy en mis productos
-            if (edition) {
+            if (enabled) {
                 if (category) {
-                    if (owner === config.mailing.ADMIN_ID) {
-                        contenido = await Product.paginate({category: category},options);
-                    } else {
-                        contenido = await Product.paginate({category: category, owner: owner},options);
-                    }
+                    contenido = await Product.paginate({category: category},options);
                 } else {
-                    if (owner === config.mailing.ADMIN_ID) {
-                        contenido = await Product.paginate({},options);
+                    contenido = await Product.paginate({},options);
+                }
+            } else {
+                //edition=true significa que estoy en mis productos
+                if (edition) {
+                    if (category) {
+                        contenido = await Product.paginate({category: category, owner: owner},options);
                     } else {
                         contenido = await Product.paginate({owner: owner},options);
                     }
-                }
-            } else {
-                if (category) {
-                    if (owner === config.mailing.ADMIN_ID) {
-                        contenido = await Product.paginate({category: category},options);
-                    } else {
-                        contenido = await Product.paginate({category: category,  owner: { $ne: owner }},options);
-                    }
                 } else {
-                    if (owner === config.mailing.ADMIN_ID) {
-                        contenido = await Product.paginate({},options);
+                    if (category) {
+                        contenido = await Product.paginate({category: category,  owner: { $ne: owner }},options);
+                    
                     } else {
                         contenido = await Product.paginate({ owner: { $ne: owner }},options);
                     }
                 }
-            }
 
+            }
             return { status: 'success', message: "Products ok.", value: contenido}
             
         } catch (error) {

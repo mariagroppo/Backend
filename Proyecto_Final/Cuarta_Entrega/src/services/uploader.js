@@ -16,7 +16,12 @@ const storage = multer.diskStorage({
       },
     filename: function (req, file, cb) {
         let name = req.session.user.email;
-        cb(null, `${name}-${Date.now()}-${file.originalname}`)
+        let docType = file.fieldname;
+        if (docType === "image") {
+            cb(null, name + ".jpg")
+        }else{
+            cb(null, `${name}-${Date.now()}-${file.originalname}`)
+        }
     }
 })
 

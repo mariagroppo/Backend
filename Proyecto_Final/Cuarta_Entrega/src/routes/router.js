@@ -38,9 +38,9 @@ export default class BaseRouter {
             if ((policies[0].toUpperCase() === 'PUBLIC')) return next();
             if (!user) return res.redirect('/login');
             if ((policies[0].toUpperCase() === 'ADMIN') && (user.role.toUpperCase() === 'ADMIN')) return next();
-            if ((policies[0].toUpperCase() === 'ADMIN') && (user.role.toUpperCase() !== 'ADMIN')) return res.status(403).send({ status: "error", error: "You are not authorized to view this section." });
+            if ((policies[0].toUpperCase() === 'ADMIN') && (user.role.toUpperCase() !== 'ADMIN')) return res.render('../src/views/partials/forbidden.hbs', {userStatus: true, userName: req.session.user.name })
             if ((policies[0].toUpperCase() === 'PREMIUM') && ((user.role.toUpperCase() === 'PREMIUMUSER') || (user.role.toUpperCase() === 'ADMIN'))) return next();
-            if ((policies[0].toUpperCase() === 'PREMIUM') && (user.role.toUpperCase() !== 'PREMIUMUSER')) return res.status(403).send({ status: "error", error: "You are not authorized to view this section." });
+            if ((policies[0].toUpperCase() === 'PREMIUM') && (user.role.toUpperCase() !== 'PREMIUMUSER')) return res.render('../src/views/partials/forbidden.hbs', {userStatus: true, userName: req.session.user.name });
             if ((policies[0].toUpperCase() === 'USER')) return next();
             req.user = user;
             next();

@@ -1,6 +1,7 @@
 import {fileURLToPath} from 'url';
 import { dirname } from 'path';
 import bcrypt from 'bcrypt';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -42,4 +43,13 @@ export async function validatePage(page) {
         console.log("validLimit error: " + error);
         return 1;
     }
+}
+
+export async function fileExists(email) {
+  try {
+    fs.accessSync(`/docs/profiles/${email}.jpg`, fs.constants.F_OK);
+    return true;
+  } catch (err) {
+    return false;
+  }
 }

@@ -9,15 +9,36 @@ DUDAS:
     A) Además, agregar una propiedad al usuario llamada “last_connection”, la cual deberá modificarse 
 cada vez que el usuario realice un proceso de login y logout (OPCIONAL).
 
-2) Revision de /users
+    - Ingresa OK el admin y otra persona registrada.
+    - Registra nuevo usuario OK.
+
+2) Revision de /products
+   Revision de /api/products
+    - ADMIN: ve todos los productos. Puede editar y borrar todos los productos.
+    - USER: ve todos los productos. No puede editar y borrar productos. No puede acceder a la
+    seccion "Mis productos". No puede acceder a otras rutas.
+    - PREMIUM USER: ve todos los productos. Puede editar y borrar todos sus productos.
+
+    A) Modificar el endpoint que elimina productos, para que, en caso de que el producto pertenezca
+    a un usuario premium, le envíe un correo indicándole que el producto fue eliminado.
+
+3) Revision de /carts
+   Revision de /api/carts
+
+    A) Finalizar las vistas pendientes para la realización de flujo completo de compra. 
+    NO ES NECESARIO tener una estructura específica de vistas, sólo las que tú consideres necesarias
+    para poder llevar a cabo el proceso de compra.
+
+
+4) Revision de /users
    Revision de /api/users
 
     A) Crear ruta api/users para ver a los usuarios. Solo ADMIN.
+
     B)Crear un endpoint en el router de usuarios api/users/:uid/documents con el método POST que permita 
     subir uno o múltiples archivos. Utilizar el middleware de Multer para poder recibir los documentos 
     que se carguen y actualizar en el usuario su status para hacer saber que ya subió algún documento en 
     particular. 
-    HECHO
     
         A) El middleware de multer deberá estar modificado para que pueda guardar en diferentes carpetas
         los diferentes archivos que se suban.
@@ -43,19 +64,6 @@ cada vez que el usuario realice un proceso de login y logout (OPCIONAL).
 
     E) Crear una vista para poder visualizar, modificar el rol y eliminar un usuario. Esta vista 
     únicamente será accesible para el administrador del ecommerce
-
-3) Revision de /products
-   Revision de /api/products
-
-    A) Modificar el endpoint que elimina productos, para que, en caso de que el producto pertenezca
-    a un usuario premium, le envíe un correo indicándole que el producto fue eliminado.
-
-4) Revision de /carts
-   Revision de /api/carts
-
-    A) Finalizar las vistas pendientes para la realización de flujo completo de compra. 
-    NO ES NECESARIO tener una estructura específica de vistas, sólo las que tú consideres necesarias
-    para poder llevar a cabo el proceso de compra.
 
 5) Realizar el despliegue de tu aplicativo en la plataforma de tu elección (Preferentemente 
 Railway.app, pues es la abarcada en el curso) y corroborar que se puede llevar a cabo un proceso

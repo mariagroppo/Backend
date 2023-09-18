@@ -117,6 +117,7 @@ const initializePassport = () => {
     /* Se guarda el usuario internamente en el navegador para que no tenga que autenticarse constantemente */
     /* Cada vez que el usuario va a otra página devuelve el id */
     passport.serializeUser((user, done) => {
+        //console.log("serial user: " + user)
         done(null, user.id);
     });
     

@@ -14,9 +14,11 @@
                     <li class="nav-item">
                         <a class="nav-link textColor" aria-current="page" href="/products">Productos</a>
                     </li>
+                    {{#if myProducts}}
                     <li class="nav-item">
                         <a class="nav-link textColor" aria-current="page" href="/products/mine">Mis productos</a>
                     </li>
+                    {{/if}}
                     <li class="nav-item">
                         <a class="nav-link textColor" href="/carts">Mis carritos</a>
                     </li>
@@ -43,7 +45,7 @@
             {{#if userStatus}}
             <div>
                 <button class="btn btn-outline-dark disabled bg-light mx-2" type="submit" id="userName"> Bienvenid@ {{userName}}</button>
-                <a href="/current"><img class="imgPerfil" src="/docs/profiles/64dd58f5dc67160b2b523087.jpg" alt=""></a>
+                <a href="/current"><img class="imgPerfil" src="/docs/profiles/{{email}}.jpg" alt="/docs/profiles/{{email}}.jpg"></a>
                 <a class="btn btn-outline-dark bg-success mx-2" aria-current="page" href="/logout">Desloguearse</a>
             {{else}}
                 <a class="btn btn-outline-dark bg-success mx-2" aria-current="page" href="/register">Registrarse</a>

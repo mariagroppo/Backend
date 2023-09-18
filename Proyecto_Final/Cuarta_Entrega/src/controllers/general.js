@@ -4,15 +4,22 @@ const pageNotFound = async (req, res) => {
 
 const views_pageNotFound = async (req, res) => {
     let userName = req.session.user.name;
+    let userRole = req.session.user.role;
+    let myProducts = false;
+    if (userRole === 'premiumUser') {
+        myProducts = true;
+    }
+    let enabled = false;
+    if (userName === 'admin') {
+        enabled = true;
+        edition = true;
+        purchase=true;
+    }
     try {
-        res.render('../src/views/partials/pageNotFound.hbs', { userStatus: true, userName});
+        res.render('../src/views/partials/pageNotFound.hbs', { userStatus: true, userName, enabled, edition, myProducts});
     } catch (error) {
-        if (req.user) {
-            return res.renderInternalError('registerForm controller error.', true)
-        } else {
-            return res.renderInternalError('registerForm controller error.', false)
-        }
 
+            return res.renderInternalError('registerForm controller error.', false,  userName, enabled, edition, myProducts)
     } 
 }
 

@@ -290,9 +290,57 @@ class UserManager {
         }
     }
 
-
-
+    backToUser = async (uid) => {
+        try {
+            let user = await UserModel.findOne({_id: uid}).lean();
+            if (user) {
+                const answer = await UserModel.updateOne(
+                    {_id: uid},
+                    {
+                        $set: {procedureStatus: "Incompleted",
+                                DNI: "Incompleted",
+                                comprobante1: "Incompleted",
+                                comprobante2: "Incompleted",
+                                role: "user"
+                            }
+                    })
+                if (answer.acknowledged === false) {
+                    return { status: 'error', message: "User Status NOT updated."}
+                } else {
+                    return { status: 'success', message: "User Status updated."}
+                }
+                
+            } else {
+                return { status: 'error', message: `User with ID ${uid} not founded.`, value: null}
+            }
+        } catch (error) {
+            return { status: 'error', message: "backToUser Manager error: " + error}
+        }
     }
+
+    deleteUser = async (uid) => {
+        try {
+            let user = await UserModel.findOne({_id: uid}).lean();
+            if (user) {
+                let answer = await UserModel.deleteOne({
+                        _id: uid
+                    })
+                if (answer.acknowledged === false) {
+                    return { status: 'error', message: "User NOT deleted."}
+                } else {
+                    return { status: 'success', message: "User deleted."}
+                }
+                
+            } else {
+                return { status: 'error', message: `User with ID ${uid} not founded.`, value: null}
+            }
+        } catch (error) {
+            return { status: 'error', message: "deleteUser Manager error: " + error}
+        }
+    }
+
+
+}
 
 
 export default UserManager;
